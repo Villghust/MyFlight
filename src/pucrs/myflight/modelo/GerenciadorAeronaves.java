@@ -1,5 +1,7 @@
 package pucrs.myflight.modelo;
 
+import com.sun.xml.internal.fastinfoset.util.StringIntMap;
+
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -24,14 +26,11 @@ public class GerenciadorAeronaves {
             sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
             String header = sc.nextLine(); // pula cabeçalho
             String cod, desc;
-
-            int cap; // Verificar se vai ler corretamente
-
+            int  cap; // Verificar se vai ler corretamente
             while (sc.hasNext()) {
                 cod = sc.next();
                 desc = sc.next();
-                cap = sc.nextInt();
-
+                cap = Integer.parseInt(sc.next().replaceAll("(\r)", ""));
                 Aeronave nova = new Aeronave(cod, desc, cap);
                 adicionar(nova);
             }
