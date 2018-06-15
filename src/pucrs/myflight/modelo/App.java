@@ -12,11 +12,12 @@ public class App {
 
 		GerenciadorCias gerCias = new GerenciadorCias();
 
+        System.out.println("========================================================================================");
+
         try {
-            gerCias.carregaDados("airlines.dat");
+            gerCias.carregaCias("airlines.dat");
         } catch (IOException e) {
             System.out.println("Não foi possível ler airlines.dat!");
-//            System.exit(1);
         }
         ArrayList<CiaAerea> todasCias = gerCias.listarTodas();
         System.out.println("Total cias:"+todasCias.size());
@@ -30,31 +31,62 @@ public class App {
 		gerCias.adicionar(new CiaAerea("AD", "Azul Linhas Aéreas"));
 		*/
 
+
+        System.out.println("========================================================================================");
+
+
 		GerenciadorAeronaves gerAvioes = new GerenciadorAeronaves();
 
-		gerAvioes.adicionar(new Aeronave("733", "Boeing 737-300", 140));
-		gerAvioes.adicionar(new Aeronave("73G", "Boeing 737-400", 126));
-		gerAvioes.adicionar(new Aeronave("380", "Airbus Industrie A380", 644));
-		gerAvioes.adicionar(new Aeronave("764", "Boeing 767-400", 304));
-		gerAvioes.ordenarDescricao();
+        try {
+            gerAvioes.carregaAeronaves("equipment.dat");
+        } catch (IOException e) {
+            System.out.println("Não foi possível ler equipment.dat!");
+        }
+        ArrayList<Aeronave> todosAvioes = gerAvioes.listarTodas();
+        System.out.println("Total avioes:"+todosAvioes.size());
+        for(Aeronave aviao: todosAvioes)
+            System.out.println(aviao.getCodigo()+" - "+aviao.getDescricao()+ " - " +aviao.getCapacidade());
+//
+//	gerAvioes.adicionar(new Aeronave("733", "Boeing 737-300", 140));
+//		gerAvioes.adicionar(new Aeronave("73G", "Boeing 737-400", 126));
+//		gerAvioes.adicionar(new Aeronave("380", "Airbus Industrie A380", 644));
+//		gerAvioes.adicionar(new Aeronave("764", "Boeing 767-400", 304));
+//		gerAvioes.ordenarDescricao();
 //        gerAvioes.ordenarCodigo();
-        // Listando em ordem alfabética de descrição:
-        System.out.println("\nAeronaves:");
-        for(Aeronave av: gerAvioes.listarTodas())
-            System.out.println(av);
-        System.out.println();
+//        // Listando em ordem alfabética de descrição:
+//        System.out.println("\nAeronaves:");
+//        for(Aeronave av: gerAvioes.listarTodas())
+//            System.out.println(av);
+//        System.out.println();
+
+
+
+        System.out.println("========================================================================================");
+
 
         GerenciadorAeroportos gerAero = new GerenciadorAeroportos();
 
-		gerAero.adicionar(new Aeroporto("POA", "Salgado Filho Intl",
-                new Geo(-29.9939, -51.1711)));
-		gerAero.adicionar(new Aeroporto("GRU", "São Paulo Guarulhos Intl",
-                new Geo(-23.4356, -46.4731)));
-		gerAero.adicionar(new Aeroporto("LIS", "Lisbon",
-                new Geo(38.7742, -9.1342)));
-		gerAero.adicionar(new Aeroporto("MIA", "Miami Intl Airport",
-                new Geo(25.7933, -80.2906)));
-		gerAero.ordenarNomes();
+        try {
+            gerAero.carregaAeroportos("airports.dat");
+        } catch (IOException e) {
+            System.out.println("Não foi possível ler airports.dat!");
+        }
+        ArrayList<Aeroporto> todosAero = gerAero.listarTodos();
+        System.out.println("Total Aero:"+todosAero.size());
+        for(Aeroporto aero: todosAero)
+            System.out.println(aero.getCodigo()+" - "+aero.getLocal()+ " - " +aero.getNome());
+//
+//	gerAero.adicionar(new Aeroporto("POA", "Salgado Filho Intl",
+//                new Geo(-29.9939, -51.1711)));
+//		gerAero.adicionar(new Aeroporto("GRU", "São Paulo Guarulhos Intl",
+//                new Geo(-23.4356, -46.4731)));
+//		gerAero.adicionar(new Aeroporto("LIS", "Lisbon",
+//                new Geo(38.7742, -9.1342)));
+//		gerAero.adicionar(new Aeroporto("MIA", "Miami Intl Airport",
+//                new Geo(25.7933, -80.2906)));
+//		gerAero.ordenarNomes();
+
+
 
         System.out.println("\nAeroportos ordenados por nome:\n");
         for(Aeroporto a: gerAero.listarTodos())
@@ -83,7 +115,22 @@ public class App {
         System.out.println("Distâcia GRU->POA: " +
             gru.getLocal().distancia(poa.getLocal()));
 
+
+
+        System.out.println("========================================================================================");
+
 		GerenciadorRotas gerRotas = new GerenciadorRotas();
+
+        try {
+            gerRotas.carregaRotas(gerCias,gerAero,gerAvioes);
+        } catch (IOException e) {
+            System.out.println("Não foi possível ler airports.dat!");
+        }
+        ArrayList<Rota> todasRotas = gerRotas.listarTodas();
+        System.out.println("Total Rotas:"+todasRotas.size());
+        for(Rota rota: todasRotas)
+            System.out.println(rota.getCia()+" - "+rota.getOrigem()+ " - " +rota.getDestino()+ " - "+rota.getAeronave());
+
 
 		Rota poagru = new Rota(latam, poa, gru, b733);
         Rota grupoa = new Rota(latam, gru, poa, b733);
