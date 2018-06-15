@@ -20,7 +20,7 @@ public class GerenciadorCias {
         return new ArrayList<>(empresas.values());
     }
 
-    public void carregaDados(String nomeArq) throws IOException {
+    public void carregaCias(String nomeArq) throws IOException {
         Path path = Paths.get(nomeArq);
         try (Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf8")))) {
             sc.useDelimiter("[;\n]"); // separadores: ; e nova linha

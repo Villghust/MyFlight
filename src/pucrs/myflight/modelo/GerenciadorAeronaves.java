@@ -20,7 +20,7 @@ public class GerenciadorAeronaves {
         return new ArrayList<>(avioes.values());
     }
 
-    public void carregaDados(String nomeArq) throws IOException {
+    public void carregaAeronaves(String nomeArq) throws IOException {
         Path path = Paths.get(nomeArq);
         try (Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf8")))) {
             sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
@@ -50,30 +50,27 @@ public class GerenciadorAeronaves {
 //       return null;
     }
 //
-//    public void ordenarDescricao() {
-//        // Usando Comparable<Aeronave> em Aeronave
-//        //Collections.sort(avioes);
-//
-//        // Usando expressão lambda
-//        //avioes.sort( (Aeronave a1, Aeronave a2) ->
-//        //    a1.getDescricao().compareTo(a2.getDescricao()));
-//
-//        // Mesma coisa, usando método static da interface Comparator:
-//        //avioes.sort(Comparator.comparing(a -> a.getDescricao()));
-//
-//        // Invertendo o critério de comparação com reversed():
+  public void ordenarDescricao() {
+        // Usando Comparable<Aeronave> em Aeronave
+        //Collections.sort(avioes);
+        // Usando expressão lambda
+        //avioes.sort( (Aeronave a1, Aeronave a2) ->
+        //    a1.getDescricao().compareTo(a2.getDescricao()));
+
+        // Mesma coisa, usando método static da interface Comparator:
+        //avioes.sort(Comparator.comparing(a -> a.getDescricao()));
+
+        // Invertendo o critério de comparação com reversed():
 //       avioes.sort(Comparator.comparing(Aeronave::getDescricao).reversed());
 //    }
 //
-//    public void ordenarCodigoDescricao() {
+//   public void ordenarCodigoDescricao() {
 //       // Ordenando pelo código e desempatando pela descrição
 //       avioes.sort(Comparator.comparing(Aeronave::getCodigo).
 //               thenComparing(Aeronave::getDescricao));
-//    }
+    }
 //
-//    public void ordenarCodigo() {
-//        avioes.sort( (Aeronave a1, Aeronave a2) ->
-//            a1.getCodigo().compareTo(a2.getCodigo()));
-//    }
-//
-}
+ //  public void ordenarCodigo() {
+   //    avioes.sort( (Aeronave a1, Aeronave a2) ->
+     //       a1.getCodigo().compareTo(a2.getCodigo()));
+  }

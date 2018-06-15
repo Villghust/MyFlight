@@ -14,7 +14,7 @@ public class GerenciadorAeroportos {
         this.aeroportos = new LinkedHashMap<>();
     }
 
-    public void carregaDados(String nomeArq) throws IOException {
+    public void carregaAeroportos(String nomeArq) throws IOException {
         Path path = Paths.get(nomeArq);
         try (Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf8")))) {
             sc.useDelimiter("[;\n]");
@@ -25,9 +25,9 @@ public class GerenciadorAeroportos {
 
             while (sc.hasNext()) {
                 cod = sc.next();
+                latitude = sc.next().replaceAll("(\r)", "");
+                longitude = sc.next().replaceAll("(\r)", "");
                 nome = sc.next();
-                latitude = sc.next();
-                longitude = sc.next();
 
                 //loc = sc.nextLine();  não da para colocar direto, pois é um objeto
 

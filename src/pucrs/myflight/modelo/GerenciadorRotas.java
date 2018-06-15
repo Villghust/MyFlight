@@ -17,7 +17,7 @@ public class GerenciadorRotas {
     }
 
 
-    public void carregaRotas(GerenciadorCias gerenciadorCias, GerenciadorAeroportos GerenciadorAeroportos, GerenciadorAeronaves GerenciadorAeronaves) throws IOException {
+    public void carregaRotas(GerenciadorCias gerenciadorCias, GerenciadorAeroportos gerenciadorAeroportos, GerenciadorAeronaves GerenciadorAeronaves) throws IOException {
         Path path2 = Paths.get("routes.dat");
         try (Scanner sc = new Scanner(Files.newBufferedReader(path2, Charset.forName("utf8")))) {
             sc.useDelimiter("[;\n ]");
@@ -31,8 +31,8 @@ public class GerenciadorRotas {
                 aeronave = sc.next();
 
                 CiaAerea cia1 = gerenciadorCias.buscarCodigo(cia);
-                Aeroporto origem1 = GerenciadorAeroportos.buscarCodigo(origem);
-                Aeroporto destino1 = GerenciadorAeroportos.buscarCodigo(destino);
+                Aeroporto origem1 = gerenciadorAeroportos.buscarCodigo(origem);
+                Aeroporto destino1 = gerenciadorAeroportos.buscarCodigo(destino);
                 Aeronave aeronave1 = GerenciadorAeronaves.buscarCodigo(aeronave);
                 Rota rota = new Rota(cia1, origem1, destino1, aeronave1);
                 adicionar(rota);
