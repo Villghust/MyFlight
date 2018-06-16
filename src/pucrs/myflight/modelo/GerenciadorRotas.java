@@ -89,4 +89,16 @@ public class GerenciadorRotas {
                 result.add(r);
         return result;
     }
+
+    public ArrayList<Rota> listarRotasCias(String cod){
+        ArrayList<Rota> result = new ArrayList<>();
+
+        for(Rota r : rotas){
+            if(r.getCia().getCodigo().equals(cod)){
+                result.add(r);
+            }
+        }
+
+        return result;
+    }
 }
