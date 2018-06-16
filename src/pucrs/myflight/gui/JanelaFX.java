@@ -84,7 +84,11 @@ public class JanelaFX extends Application {
 
 		btnConsulta1.setOnAction(e -> {
 			consulta1(textField.getText());
-		});			
+		});
+
+		btnConsulta3.setOnAction(e -> {
+			consulta3("POA", "LHR");
+		});
 
 		pane.setCenter(mapkit);
 		pane.setTop(leftPane);
@@ -129,7 +133,7 @@ public class JanelaFX extends Application {
 
 		gerPaises = new GerenciadorPaises();
 		try {
-			gerAvioes.carregaAeronaves("countries.dat");
+			gerPaises.carregaPaises("countries.dat");
 		} catch (IOException e) {
 			System.out.println("Não foi possível ler countries.dat!");
 		}
@@ -207,12 +211,9 @@ public class JanelaFX extends Application {
 					}
 				}
 			}
-
 			if(!(tr == null)) gerenciador.addTracado(tr);
-
 			if(!(tr2 == null)) gerenciador.addTracado(tr2);
 		}
-
 		gerenciador.setPontos(lstPoints);
 		gerenciador.getMapKit().repaint();
 	}
