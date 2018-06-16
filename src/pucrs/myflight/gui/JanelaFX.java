@@ -29,14 +29,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import pucrs.myflight.modelo.Aeroporto;
-import pucrs.myflight.modelo.CiaAerea;
-import pucrs.myflight.modelo.Geo;
-import pucrs.myflight.modelo.GerenciadorAeronaves;
-import pucrs.myflight.modelo.GerenciadorAeroportos;
-import pucrs.myflight.modelo.GerenciadorCias;
-import pucrs.myflight.modelo.GerenciadorRotas;
-import pucrs.myflight.modelo.Rota;
+import pucrs.myflight.modelo.*;
 
 public class JanelaFX extends Application {
 
@@ -103,9 +96,49 @@ public class JanelaFX extends Application {
 	private void setup() {
 
 		gerCias = new GerenciadorCias();
+		try {
+			gerCias.carregaCias("airlines.dat");
+		} catch (IOException e) {
+			System.out.println("Não foi possível ler airlines.dat!");
+		}
+		ArrayList<CiaAerea> todasCias = gerCias.listarTodas();
+		System.out.println("Total cias:"+todasCias.size());
+		for(CiaAerea cia: todasCias)
+			System.out.println(cia.getCodigo()+" - "+cia.getNome());
+
 		gerAero = new GerenciadorAeroportos();
-		gerRotas = new GerenciadorRotas();
+		try {
+			gerAero.carregaAeroportos("airports.dat");
+		} catch (IOException e) {
+			System.out.println("Não foi possível ler airports.dat!");
+		}
+		ArrayList<Aeroporto> todosAero = gerAero.listarTodos();
+		System.out.println("Total Aero:"+todosAero.size());
+		for(Aeroporto aero: todosAero)
+			System.out.println(aero.getCodigo()+" - "+aero.getLocal()+ " - " +aero.getNome());
+
 		gerAvioes = new GerenciadorAeronaves();
+		try {
+			gerAvioes.carregaAeronaves("equipment.dat");
+		} catch (IOException e) {
+			System.out.println("Não foi possível ler equipment.dat!");
+		}
+		ArrayList<Aeronave> todosAvioes = gerAvioes.listarTodas();
+		System.out.println("Total avioes:"+todosAvioes.size());
+		for(Aeronave aviao: todosAvioes)
+			System.out.println(aviao.getCodigo()+" - "+aviao.getDescricao()+ " - " +aviao.getCapacidade());
+
+		gerRotas = new GerenciadorRotas();
+		try {
+			gerRotas.carregaRotas(gerCias,gerAero,gerAvioes);
+		} catch (IOException e) {
+			System.out.println("Não foi possível ler airports.dat!");
+		}
+		ArrayList<Rota> todasRotas = gerRotas.listarTodas();
+		System.out.println("Total Rotas:"+todasRotas.size());
+		for(Rota rota: todasRotas)
+			System.out.println(rota.getCia()+" - "+rota.getOrigem()+ " - " +rota.getDestino()+ " - "+rota.getAeronave());
+
 	}
 
 	private void consulta1() {
@@ -144,7 +177,7 @@ public class JanelaFX extends Application {
 		lstPoints.add(new MyWaypoint(Color.RED, mia.getCodigo(), mia.getLocal(), 5));
 
 		// Para obter um ponto clicado no mapa, usar como segue:
-		// GeoPosition pos = gerenciador.getPosicao();
+		GeoPosition pos = gerenciador.getPosicao();
 
 		// Informa o resultado para o gerenciador
 		gerenciador.setPontos(lstPoints);
