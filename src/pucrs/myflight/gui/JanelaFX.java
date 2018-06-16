@@ -83,7 +83,7 @@ public class JanelaFX extends Application {
 		leftPane.add(btnConsulta4, 4, 0);
 
 		btnConsulta1.setOnAction(e -> {
-			consulta1(textField.getText());
+			consulta1(textField.getText().toUpperCase());
 		});
 
 		btnConsulta3.setOnAction(e -> {
@@ -140,6 +140,7 @@ public class JanelaFX extends Application {
 	}
 
 	private void consulta1(String cod){
+
 		ArrayList<Rota> rotas = gerRotas.listarRotasCias(cod);
 		List<MyWaypoint> listPontos = new ArrayList<>();
 
@@ -163,7 +164,6 @@ public class JanelaFX extends Application {
 		}
 		gerenciador.setPontos(listPontos);
 		gerenciador.getMapKit().repaint();
-
 	}
 
 	private void consulta3(String origem, String destino){
@@ -202,7 +202,7 @@ public class JanelaFX extends Application {
 						tr.addPonto(rOrigem.getDestino().getLocal());
 
 						tr2 = new Tracado();
-						tr2.setCor(Color.BLUE);
+						tr2.setCor(Color.GREEN);
 						tr2.setWidth(2);
 						tr2.addPonto(rOrigem.getDestino().getLocal());
 						tr2.addPonto(fim.getLocal());
