@@ -19,7 +19,7 @@ public class GerenciadorAeroportos {
         try (Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf8")))) {
             sc.useDelimiter("[;\n]");
             String header = sc.nextLine();
-            String cod, nome, latitude, longitude;
+            String cod, nome, latitude, longitude, codigoPais;
 
             //  String  loc; dividido em lat e long;
 
@@ -27,12 +27,11 @@ public class GerenciadorAeroportos {
                 cod = sc.next();
                 latitude = sc.next().replaceAll("(\r)", "");
                 longitude = sc.next().replaceAll("(\r)", "");
-                nome = sc.next();
-
-                //loc = sc.nextLine();  não da para colocar direto, pois é um objeto
+                nome = sc.next().replaceAll("(\r)", "");
+                codigoPais = sc.next().replaceAll("(\r)", "");
 
                 Geo geo = new Geo(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                Aeroporto nova = new Aeroporto(cod, nome, geo); // <- Criar classe pais e adicionar um nova variavel aqui
+                Aeroporto nova = new Aeroporto(cod, nome, geo, codigoPais);
                 adicionar(nova);
 
             }
@@ -44,8 +43,7 @@ public class GerenciadorAeroportos {
 //    }
 
     public void adicionar(Aeroporto aero) {
-        aeroportos.put(aero.getCodigo(),
-                aero);
+        aeroportos.put(aero.getCodigo(), aero);
     }
 
     public ArrayList<Aeroporto> listarTodos() {

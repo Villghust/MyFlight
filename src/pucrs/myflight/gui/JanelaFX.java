@@ -113,10 +113,10 @@ public class JanelaFX extends Application {
 		// Lista para armazenar o resultado da consulta
 		List<MyWaypoint> lstPoints = new ArrayList<>();
 
-		Aeroporto poa = new Aeroporto("POA", "Salgado Filho", new Geo(-29.9939, -51.1711));
-		Aeroporto gru = new Aeroporto("GRU", "Guarulhos", new Geo(-23.4356, -46.4731));
-		Aeroporto lis = new Aeroporto("LIS", "Lisbon", new Geo(38.772,-9.1342));
-		Aeroporto mia = new Aeroporto("MIA", "Miami International", new Geo(25.7933, -80.2906));
+		Aeroporto poa = new Aeroporto("POA", "Salgado Filho", new Geo(-29.9939, -51.1711), "BR");
+		Aeroporto gru = new Aeroporto("GRU", "Guarulhos", new Geo(-23.4356, -46.4731), "BR");
+		Aeroporto lis = new Aeroporto("LIS", "Lisbon", new Geo(38.772,-9.1342), "PT");
+		Aeroporto mia = new Aeroporto("MIA", "Miami International", new Geo(25.7933, -80.2906), "US");
 		
 		gerenciador.clear();
 		Tracado tr = new Tracado();
