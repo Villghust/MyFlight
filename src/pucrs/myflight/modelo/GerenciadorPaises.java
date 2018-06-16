@@ -5,6 +5,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -34,7 +35,7 @@ public class GerenciadorPaises {
         return paises.get(K);
     }
 
-    public Map<String, Aeroporto> getAeroportos(String K) {
+    public ArrayList<Aeroporto> getAeroportos(String K) {
         Pais p = paises.get(K);
         return p.getAeroportos();
     }
