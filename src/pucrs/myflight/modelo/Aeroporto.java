@@ -4,22 +4,21 @@ public class Aeroporto implements Comparable<Aeroporto> {
 	private String codigo;
 	private String nome;
 	private Geo loc;
-	private Pais pais;
+	private String codigoPais;
 
-
-
-	public Aeroporto(String codigo, String nome, Geo loc, Pais pais) {
+	public Aeroporto(String codigo, String nome, Geo loc, String codigoPais) {
 		this.codigo = codigo;
 		this.nome = nome;
 		this.loc = loc;
-		this.pais = pais;
+		this.codigoPais = codigoPais;
 	}
 	
 	public String getCodigo() {
 		return codigo;
 	}
 
-	public Pais getPais() { return pais;
+	public String getPais() {
+	    return codigoPais;
 	}
 	
 	public String getNome() {
