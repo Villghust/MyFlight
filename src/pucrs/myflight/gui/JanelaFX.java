@@ -135,53 +135,6 @@ public class JanelaFX extends Application {
 		}
 	}
 
-	private void consulta1() {
-
-		// Lista para armazenar o resultado da consulta
-		List<MyWaypoint> lstPoints = new ArrayList<>();
-
-		Aeroporto poa = new Aeroporto("POA", "Salgado Filho", new Geo(-29.9939, -51.1711), "BR");
-		Aeroporto gru = new Aeroporto("GRU", "Guarulhos", new Geo(-23.4356, -46.4731), "BR");
-		Aeroporto lis = new Aeroporto("LIS", "Lisbon", new Geo(38.772,-9.1342), "PT");
-		Aeroporto mia = new Aeroporto("MIA", "Miami International", new Geo(25.7933, -80.2906), "US");
-		
-		gerenciador.clear();
-		Tracado tr = new Tracado();
-		tr.setLabel("Teste");
-		tr.setWidth(5);
-		tr.setCor(new Color(0,0,0,60));
-		tr.addPonto(poa.getLocal());
-		tr.addPonto(mia.getLocal());
-
-		gerenciador.addTracado(tr);
-		
-		Tracado tr2 = new Tracado();
-		tr2.setWidth(5);
-		tr2.setCor(Color.BLUE);
-		tr2.addPonto(gru.getLocal());
-		tr2.addPonto(lis.getLocal());
-		gerenciador.addTracado(tr2);
-		
-		// Adiciona os locais de cada aeroporto (sem repetir) na lista de
-		// waypoints
-		
-		lstPoints.add(new MyWaypoint(Color.RED, poa.getCodigo(), poa.getLocal(), 5));
-		lstPoints.add(new MyWaypoint(Color.RED, gru.getCodigo(), gru.getLocal(), 5));
-		lstPoints.add(new MyWaypoint(Color.RED, lis.getCodigo(), lis.getLocal(), 5));
-		lstPoints.add(new MyWaypoint(Color.RED, mia.getCodigo(), mia.getLocal(), 5));
-
-		// Para obter um ponto clicado no mapa, usar como segue:
-		GeoPosition pos = gerenciador.getPosicao();
-
-		// Informa o resultado para o gerenciador
-		gerenciador.setPontos(lstPoints);
-
-		// Quando for o caso de limpar os traçados...
-		// gerenciador.clear();
-
-		gerenciador.getMapKit().repaint();
-	}
-
 	private void consulta1(String cod){
 		ArrayList<Rota> rotas = gerRotas.listarRotasCias(cod);
 		List<MyWaypoint> listPontos = new ArrayList<>();
@@ -207,6 +160,61 @@ public class JanelaFX extends Application {
 		gerenciador.setPontos(listPontos);
 		gerenciador.getMapKit().repaint();
 
+	}
+
+	private void consulta3(String origem, String destino){
+
+		List<MyWaypoint> lstPoints = new ArrayList<>();
+
+		ArrayList<Rota> rotasIniciais = gerRotas.buscarOrigem(origem);
+
+		Aeroporto inicio = gerAero.buscarCodigo(origem);
+		Aeroporto fim = gerAero.buscarCodigo(destino);
+
+		gerenciador.clear();
+
+		lstPoints.add(new MyWaypoint(Color.RED, inicio.getCodigo(), inicio.getLocal(), 5));
+		lstPoints.add(new MyWaypoint(Color.RED, fim.getCodigo(), fim.getLocal(), 5));
+
+		for(Rota rOrigem : rotasIniciais){
+			Tracado tr = null;
+			Tracado tr2 = null;
+
+			if(rOrigem.getDestino().equals(fim)) {
+				tr = new Tracado();
+				tr.setCor(Color.BLUE);
+				tr.setWidth(2);
+				tr.addPonto(rOrigem.getOrigem().getLocal());
+				tr.addPonto(fim.getLocal());
+			} else {
+				ArrayList<Rota> conexao = gerRotas.buscarOrigem(rOrigem.getDestino().getCodigo());
+
+				for(Rota r : conexao){
+					if(r.getDestino().equals(fim)){
+						tr = new Tracado();
+						tr.setCor(Color.BLUE);
+						tr.setWidth(2);
+						tr.addPonto(rOrigem.getOrigem().getLocal());
+						tr.addPonto(rOrigem.getDestino().getLocal());
+
+						tr2 = new Tracado();
+						tr2.setCor(Color.BLUE);
+						tr2.setWidth(2);
+						tr2.addPonto(rOrigem.getDestino().getLocal());
+						tr2.addPonto(fim.getLocal());
+
+						lstPoints.add(new MyWaypoint(Color.RED, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 5));
+					}
+				}
+			}
+
+			if(!(tr == null)) gerenciador.addTracado(tr);
+
+			if(!(tr2 == null)) gerenciador.addTracado(tr2);
+		}
+
+		gerenciador.setPontos(lstPoints);
+		gerenciador.getMapKit().repaint();
 	}
 
 	private class EventosMouse extends MouseAdapter {
