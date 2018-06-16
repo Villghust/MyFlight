@@ -90,6 +90,10 @@ public class JanelaFX extends Application {
 			consulta3("POA", "LHR");
 		});
 
+		btnConsulta2.setOnAction(e -> {
+			consulta2();
+		});
+
 		pane.setCenter(mapkit);
 		pane.setTop(leftPane);
 
@@ -215,6 +219,23 @@ public class JanelaFX extends Application {
 			if(!(tr2 == null)) gerenciador.addTracado(tr2);
 		}
 		gerenciador.setPontos(lstPoints);
+		gerenciador.getMapKit().repaint();
+	}
+
+	private void consulta2() {
+
+		ArrayList<Aeroporto> aeroportos = gerAero.listarTodos();
+		List<MyWaypoint> listPontos = new ArrayList<>();
+
+		gerenciador.clear();
+
+		for(Aeroporto aero : aeroportos) {
+			listPontos.add(new MyWaypoint(Color.RED, aero.getCodigo(), aero.getLocal(), 5));
+		}
+
+		
+
+		gerenciador.setPontos(listPontos);
 		gerenciador.getMapKit().repaint();
 	}
 
