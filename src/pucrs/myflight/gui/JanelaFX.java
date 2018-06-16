@@ -40,6 +40,7 @@ public class JanelaFX extends Application {
 	private GerenciadorAeroportos gerAero;
 	private GerenciadorRotas gerRotas;
 	private GerenciadorAeronaves gerAvioes;
+	private GerenciadorPaises gerPaises;
 
 	private GerenciadorMapa gerenciador;
 
@@ -104,10 +105,6 @@ public class JanelaFX extends Application {
 		} catch (IOException e) {
 			System.out.println("Não foi possível ler airlines.dat!");
 		}
-		ArrayList<CiaAerea> todasCias = gerCias.listarTodas();
-		System.out.println("Total cias:"+todasCias.size());
-		for(CiaAerea cia: todasCias)
-			System.out.println(cia.getCodigo()+" - "+cia.getNome());
 
 		gerAero = new GerenciadorAeroportos();
 		try {
@@ -115,10 +112,6 @@ public class JanelaFX extends Application {
 		} catch (IOException e) {
 			System.out.println("Não foi possível ler airports.dat!");
 		}
-		ArrayList<Aeroporto> todosAero = gerAero.listarTodos();
-		System.out.println("Total Aero:"+todosAero.size());
-		for(Aeroporto aero: todosAero)
-			System.out.println(aero.getCodigo()+" - "+aero.getLocal()+ " - " +aero.getNome());
 
 		gerAvioes = new GerenciadorAeronaves();
 		try {
@@ -126,10 +119,6 @@ public class JanelaFX extends Application {
 		} catch (IOException e) {
 			System.out.println("Não foi possível ler equipment.dat!");
 		}
-		ArrayList<Aeronave> todosAvioes = gerAvioes.listarTodas();
-		System.out.println("Total avioes:"+todosAvioes.size());
-		for(Aeronave aviao: todosAvioes)
-			System.out.println(aviao.getCodigo()+" - "+aviao.getDescricao()+ " - " +aviao.getCapacidade());
 
 		gerRotas = new GerenciadorRotas();
 		try {
@@ -137,11 +126,13 @@ public class JanelaFX extends Application {
 		} catch (IOException e) {
 			System.out.println("Não foi possível ler airports.dat!");
 		}
-		ArrayList<Rota> todasRotas = gerRotas.listarTodas();
-		System.out.println("Total Rotas:"+todasRotas.size());
-		for(Rota rota: todasRotas)
-			System.out.println(rota.getCia()+" - "+rota.getOrigem()+ " - " +rota.getDestino()+ " - "+rota.getAeronave());
 
+		gerPaises = new GerenciadorPaises();
+		try {
+			gerAvioes.carregaAeronaves("countries.dat");
+		} catch (IOException e) {
+			System.out.println("Não foi possível ler countries.dat!");
+		}
 	}
 
 	private void consulta1() {
@@ -225,13 +216,37 @@ public class JanelaFX extends Application {
 		public void mousePressed(MouseEvent e) {
 			JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
 			GeoPosition loc = mapa.convertPointToGeoPosition(e.getPoint());
-			// System.out.println(loc.getLatitude()+", "+loc.getLongitude());
+//			System.out.println(loc.getLatitude()+", "+loc.getLongitude());
 			lastButton = e.getButton();
 			// Botão 3: seleciona localização
 			if (lastButton == MouseEvent.BUTTON3) {
 				gerenciador.setPosicao(loc);
 				gerenciador.getMapKit().repaint();
 			}
+
+			List<MyWaypoint> lstPoints = new ArrayList<>();
+
+			Geo localClicado = new Geo(gerenciador.getPosicao().getLatitude(), gerenciador.getPosicao().getLongitude());
+			Aeroporto aeroPerto = gerAero.listarTodos().get(0); // Foi mal o trocadilho..
+			double distancia = Geo.distancia(localClicado, aeroPerto.getLocal());
+
+			// inicializar no aero 0
+
+			for (Aeroporto aero : gerAero.listarTodos()) {
+				Geo pos = aero.getLocal();
+				double dist = Geo.distancia(localClicado, pos);
+				if (dist <= distancia) {
+					aeroPerto = aero;
+					distancia = dist;
+				}
+			}
+
+			gerenciador.clear();
+
+			lstPoints.add(new MyWaypoint(Color.RED, aeroPerto.getCodigo(), aeroPerto.getLocal(), 5));
+
+			gerenciador.setPontos(lstPoints);
+			gerenciador.getMapKit().repaint();
 		}
 	}
 
