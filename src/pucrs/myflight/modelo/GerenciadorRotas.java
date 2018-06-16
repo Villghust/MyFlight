@@ -16,23 +16,20 @@ public class GerenciadorRotas {
         this.rotas = new ArrayList<>();
     }
 
-
     public void carregaRotas(GerenciadorCias gerenciadorCias, GerenciadorAeroportos gerenciadorAeroportos, GerenciadorAeronaves GerenciadorAeronaves) throws IOException {
         Path path2 = Paths.get("routes.dat");
         try (Scanner sc = new Scanner(Files.newBufferedReader(path2, Charset.forName("utf8")))) {
             sc.useDelimiter("[;\n ]");
             String header = sc.nextLine();
             String cia, origem, destino, aeronave;
-
             while (sc.hasNext()) {
                 cia = sc.next().replaceAll("(\r)", "");
                 origem = sc.next().replaceAll("(\r)", "");
                 destino = sc.next().replaceAll("(\r)", "");
-                sc.next();
-                sc.next();
+                sc.next(); // Dados ignorados
+                sc.next(); // Dados ignorados
                 aeronave = sc.next().replaceAll("(\r)", "");
-                sc.nextLine();
-
+                sc.nextLine(); // Pula a linha depois de atribuir a primera aeronave, ignorando quando tem mais de uma aeronave para a mesma rota.
                 CiaAerea cia1 = gerenciadorCias.buscarCodigo(cia);
                 Aeroporto origem1 = gerenciadorAeroportos.buscarCodigo(origem);
                 Aeroporto destino1 = gerenciadorAeroportos.buscarCodigo(destino);
@@ -45,12 +42,9 @@ public class GerenciadorRotas {
         }
     }
 
-
-
-        public void ordenarCias(){
-            Collections.sort(rotas);
-        }
-
+    public void ordenarCias(){
+        Collections.sort(rotas);
+    }
 
     public void ordenarNomesCias() {
         rotas.sort( (Rota r1, Rota r2) ->
@@ -74,6 +68,7 @@ public class GerenciadorRotas {
                    r2.getCia().getNome());
         });
     }
+
     public void adicionar(Rota r) {
         rotas.add(r);
     }
