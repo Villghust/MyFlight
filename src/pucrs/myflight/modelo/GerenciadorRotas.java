@@ -25,10 +25,13 @@ public class GerenciadorRotas {
             String cia, origem, destino, aeronave;
 
             while (sc.hasNext()) {
-                cia = sc.next();
-                origem = sc.next();
-                destino = sc.next();
-                aeronave = sc.next();
+                cia = sc.next().replaceAll("(\r)", "");
+                origem = sc.next().replaceAll("(\r)", "");
+                destino = sc.next().replaceAll("(\r)", "");
+                sc.next();
+                sc.next();
+                aeronave = sc.next().replaceAll("(\r)", "");
+                sc.nextLine();
 
                 CiaAerea cia1 = gerenciadorCias.buscarCodigo(cia);
                 Aeroporto origem1 = gerenciadorAeroportos.buscarCodigo(origem);
@@ -37,7 +40,8 @@ public class GerenciadorRotas {
                 Rota rota = new Rota(cia1, origem1, destino1, aeronave1);
                 adicionar(rota);
             }
-
+        } catch(IOException erro) {
+            System.err.format("Erro de E/S: %s%n", erro);
         }
     }
 

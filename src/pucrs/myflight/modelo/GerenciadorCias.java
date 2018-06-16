@@ -11,8 +11,6 @@ public class GerenciadorCias {
     private Map<String, CiaAerea> empresas;
 
     public GerenciadorCias() {
-//        this.empresas = new HashMap<>();
-//        this.empresas = new TreeMap<>();
         this.empresas = new LinkedHashMap<>();
     }
 
@@ -23,15 +21,14 @@ public class GerenciadorCias {
     public void carregaCias(String nomeArq) throws IOException {
         Path path = Paths.get(nomeArq);
         try (Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf8")))) {
-            sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
-            String header = sc.nextLine(); // pula cabeçalho
+            sc.useDelimiter("[;\n]");
+            String header = sc.nextLine();
             String cod, nome;
             while (sc.hasNext()) {
                 cod = sc.next();
                 nome = sc.next();
                 CiaAerea nova = new CiaAerea(cod, nome);
                 adicionar(nova);
-                //System.out.format("%s - %s (%s)%n", nome, data, cpf);
             }
         }
     }
