@@ -144,10 +144,10 @@ public class App {
 //		gerRotas.ordenarCias();
 		gerRotas.ordenarNomesAeroportosCias();
 
-        System.out.println("\nRotas ordenadas:\n");
-        for(Rota r: gerRotas.listarTodas())
-            System.out.println(r);
-        System.out.println();
+//        System.out.println("\nRotas ordenadas:\n");
+//        for(Rota r: gerRotas.listarTodas())
+//            System.out.println(r);
+//        System.out.println();
 
 		LocalDateTime manhacedo = LocalDateTime.of(2018, 3, 29, 8, 0);
         LocalDateTime manhameio = LocalDateTime.of(2018, 4, 4, 10, 0);
