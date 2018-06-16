@@ -1,6 +1,6 @@
 package pucrs.myflight.gui;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import javax.swing.SwingUtilities;
 
+import javafx.scene.control.TextField;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 
@@ -72,20 +73,22 @@ public class JanelaFX extends Application {
 		Button btnConsulta2 = new Button("Consulta 2");
 		Button btnConsulta3 = new Button("Consulta 3");
 		Button btnConsulta4 = new Button("Consulta 4");
+		TextField textField = new TextField();
 
-		leftPane.add(btnConsulta1, 0, 0);
+		leftPane.add(textField,0,0);
+		leftPane.add(btnConsulta1, 1, 0);
 		leftPane.add(btnConsulta2, 2, 0);
 		leftPane.add(btnConsulta3, 3, 0);
 		leftPane.add(btnConsulta4, 4, 0);
 
 		btnConsulta1.setOnAction(e -> {
-			consulta1();
+			consulta1(textField.getText());
 		});			
 
 		pane.setCenter(mapkit);
 		pane.setTop(leftPane);
 
-		Scene scene = new Scene(pane, 500, 500);
+		Scene scene = new Scene(pane, 1000, 1000);
 		primaryStage.setScene(scene);
 		primaryStage.setTitle("Mapas com JavaFX");
 		primaryStage.show();
@@ -186,6 +189,33 @@ public class JanelaFX extends Application {
 		// gerenciador.clear();
 
 		gerenciador.getMapKit().repaint();
+	}
+
+	private void consulta1(String cod){
+		ArrayList<Rota> rotas = gerRotas.listarRotasCias(cod);
+		List<MyWaypoint> listPontos = new ArrayList<>();
+
+		gerenciador.clear();
+
+		for(Rota r : rotas){
+
+			Tracado tracado = new Tracado();
+			tracado.setCor(Color.BLUE);
+			tracado.setWidth(1);
+			tracado.addPonto(r.getOrigem().getLocal());
+			tracado.addPonto(r.getDestino().getLocal());
+			gerenciador.addTracado(tracado);
+
+			if(!listPontos.contains(r.getOrigem())){
+				listPontos.add(new MyWaypoint(Color.RED, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 5));
+			}
+			if(!listPontos.contains(r.getDestino())){
+				listPontos.add(new MyWaypoint(Color.RED, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
+			}
+		}
+		gerenciador.setPontos(listPontos);
+		gerenciador.getMapKit().repaint();
+
 	}
 
 	private class EventosMouse extends MouseAdapter {
