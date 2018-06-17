@@ -288,7 +288,7 @@ public class JanelaFX extends Application {
         gerenciador.getMapKit().repaint();
 
         // TODO devemos apresentar os aeroportos que são alcançáveis ATÉ UM DETERMINADO TEMPO DE VOO (ex: 12 horas), com no máximo duas conexões ...
-        // ... por enquanto nosso código mostra todos os voos alcançados.
+        // ... por enquanto nosso código mostra todos os voos alcançados com no máximo duas conexões. Precisamos implementar essa treta do tempo ai.
         // TODO utilizar o textField para set de tempo de voo.
 
 	}
