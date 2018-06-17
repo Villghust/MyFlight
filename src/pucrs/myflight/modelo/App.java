@@ -116,7 +116,6 @@ public class App {
             gru.getLocal().distancia(poa.getLocal()));
         */
 
-
         System.out.println("################## ROTAS ################## ");
 
 		GerenciadorRotas gerRotas = new GerenciadorRotas();

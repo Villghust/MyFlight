@@ -11,7 +11,7 @@ public class Pais {
     public Pais(String codigo, String nome){
         this.codigo = codigo;
         this.nome = nome;
-        aeroportos = new ArrayList<Aeroporto>();
+        aeroportos = new ArrayList<>();
     }
 
     public String getCodigo() {

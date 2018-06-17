@@ -48,6 +48,7 @@ public class JanelaFX extends Application {
 
 	private ObservableList<CiaAerea> comboCiasData;
 	private ComboBox<CiaAerea> comboCia;
+	private Aeroporto aeroPerto;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -82,15 +83,28 @@ public class JanelaFX extends Application {
 		leftPane.add(btnConsulta3, 3, 0);
 		leftPane.add(btnConsulta4, 4, 0);
 
+		// Escrever o código da companhia aérea no textField para mostra todas as rotas e aeroportos desta mesma companhia.
 		btnConsulta1.setOnAction(e -> {
-			consulta1(textField.getText());
-		});			
+			consulta1(textField.getText().toUpperCase());
+		});
+
+		// Mostra todos os aeroportos do mundo ... falta coisa aqui @Fred @Marcelo
+		btnConsulta2.setOnAction(e -> {
+			consulta2();
+		});
+
+		// Clicar com o botão direito para selecionar o primeiro aeroporto e ...
+		// ... escrever no textField o código do segundo aeroporto para mostrar todas as rotas entre eles com até 1 escala.
+		btnConsulta3.setOnAction(e -> {
+			consulta3(aeroPerto.getCodigo(), textField.getText().toUpperCase());
+		});
 
 		pane.setCenter(mapkit);
 		pane.setTop(leftPane);
 
-		Scene scene = new Scene(pane, 1000, 1000);
+		Scene scene = new Scene(pane, 1080, 720);
 		primaryStage.setScene(scene);
+//		primaryStage.setFullScreen(true);
 		primaryStage.setTitle("Mapas com JavaFX");
 		primaryStage.show();
 
@@ -122,20 +136,21 @@ public class JanelaFX extends Application {
 
 		gerRotas = new GerenciadorRotas();
 		try {
-			gerRotas.carregaRotas(gerCias,gerAero,gerAvioes);
+			gerRotas.carregaRotas(gerCias, gerAero, gerAvioes);
 		} catch (IOException e) {
 			System.out.println("Não foi possível ler airports.dat!");
 		}
 
 		gerPaises = new GerenciadorPaises();
 		try {
-			gerAvioes.carregaAeronaves("countries.dat");
+			gerPaises.carregaPaises("countries.dat");
 		} catch (IOException e) {
 			System.out.println("Não foi possível ler countries.dat!");
 		}
 	}
 
 	private void consulta1(String cod){
+
 		ArrayList<Rota> rotas = gerRotas.listarRotasCias(cod);
 		List<MyWaypoint> listPontos = new ArrayList<>();
 
@@ -159,7 +174,33 @@ public class JanelaFX extends Application {
 		}
 		gerenciador.setPontos(listPontos);
 		gerenciador.getMapKit().repaint();
+	}
 
+	private void consulta2() {
+
+		ArrayList<Aeroporto> aeroportosDoMundo = gerAero.listarTodos();
+		ArrayList<Rota> rotasNoMundo = gerRotas.listarTodas();
+		List<MyWaypoint> listPontos = new ArrayList<>();
+
+		gerenciador.clear();
+
+		for(Aeroporto aero : aeroportosDoMundo) {
+			listPontos.add(new MyWaypoint(Color.RED, aero.getCodigo(), aero.getLocal(), 5));
+		}
+
+		// @TODO Implementar o for que mostra todas as rotas mundiais.
+//		Tracado tr;
+//
+//		for(Rota r : rotasNoMundo){
+//			tr = new Tracado();
+//			tr.setWidth(r.getOrigem().getNivelDeTrafego()+r.getDestino().getNivelDeTrafego()/3);
+//			tr.addPonto(r.getOrigem().getLocal());
+//			tr.addPonto(r.getDestino().getLocal());
+//			gerenciador.addTracado(tr);
+//		}
+
+		gerenciador.setPontos(listPontos);
+		gerenciador.getMapKit().repaint();
 	}
 
 	private void consulta3(String origem, String destino){
@@ -198,7 +239,7 @@ public class JanelaFX extends Application {
 						tr.addPonto(rOrigem.getDestino().getLocal());
 
 						tr2 = new Tracado();
-						tr2.setCor(Color.BLUE);
+						tr2.setCor(Color.GREEN);
 						tr2.setWidth(2);
 						tr2.addPonto(rOrigem.getDestino().getLocal());
 						tr2.addPonto(fim.getLocal());
@@ -207,12 +248,9 @@ public class JanelaFX extends Application {
 					}
 				}
 			}
-
 			if(!(tr == null)) gerenciador.addTracado(tr);
-
 			if(!(tr2 == null)) gerenciador.addTracado(tr2);
 		}
-
 		gerenciador.setPontos(lstPoints);
 		gerenciador.getMapKit().repaint();
 	}
@@ -226,6 +264,7 @@ public class JanelaFX extends Application {
 			GeoPosition loc = mapa.convertPointToGeoPosition(e.getPoint());
 //			System.out.println(loc.getLatitude()+", "+loc.getLongitude());
 			lastButton = e.getButton();
+
 			// Botão 3: seleciona localização
 			if (lastButton == MouseEvent.BUTTON3) {
 				gerenciador.setPosicao(loc);
@@ -234,11 +273,9 @@ public class JanelaFX extends Application {
 
 			List<MyWaypoint> lstPoints = new ArrayList<>();
 
+			aeroPerto = gerAero.listarTodos().get(0);
 			Geo localClicado = new Geo(gerenciador.getPosicao().getLatitude(), gerenciador.getPosicao().getLongitude());
-			Aeroporto aeroPerto = gerAero.listarTodos().get(0); // Foi mal o trocadilho..
 			double distancia = Geo.distancia(localClicado, aeroPerto.getLocal());
-
-			// inicializar no aero 0
 
 			for (Aeroporto aero : gerAero.listarTodos()) {
 				Geo pos = aero.getLocal();
@@ -251,7 +288,7 @@ public class JanelaFX extends Application {
 
 			gerenciador.clear();
 
-			lstPoints.add(new MyWaypoint(Color.RED, aeroPerto.getCodigo(), aeroPerto.getLocal(), 5));
+			lstPoints.add(new MyWaypoint(Color.MAGENTA, aeroPerto.getCodigo(), aeroPerto.getLocal(), 7));
 
 			gerenciador.setPontos(lstPoints);
 			gerenciador.getMapKit().repaint();
