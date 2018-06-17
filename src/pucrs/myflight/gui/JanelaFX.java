@@ -77,7 +77,7 @@ public class JanelaFX extends Application {
 		Button btnConsulta4 = new Button("Consulta 4");
 		TextField textField = new TextField();
 
-		leftPane.add(textField,0,0);
+		leftPane.add(textField, 0, 0);
 		leftPane.add(btnConsulta1, 1, 0);
 		leftPane.add(btnConsulta2, 2, 0);
 		leftPane.add(btnConsulta3, 3, 0);
@@ -90,7 +90,8 @@ public class JanelaFX extends Application {
 
 		// Mostra todos os aeroportos do mundo ... falta coisa aqui @Fred @Marcelo
 		btnConsulta2.setOnAction(e -> {
-			consulta2();
+			consulta2(textField.getText().toUpperCase());
+
 		});
 
 		// Clicar com o botão direito para selecionar o primeiro aeroporto e ...
@@ -100,10 +101,10 @@ public class JanelaFX extends Application {
 		});
 
 		// Clicar com o botão direito para selecionar o aeroporto e clicar no botão consulta4 para mostrar os destinos ...
-        // ... que o aeroporto tem
+		// ... que o aeroporto tem
 		btnConsulta4.setOnAction(e -> {
-		    consulta4(aeroPerto.getCodigo());
-        });
+			consulta4(aeroPerto.getCodigo());
+		});
 
 		pane.setCenter(mapkit);
 		pane.setTop(leftPane);
@@ -154,7 +155,7 @@ public class JanelaFX extends Application {
 			System.out.println("Não foi possível ler countries.dat!");
 		}
 
-        aeroPerto = gerAero.listarTodos().get(0); // Trocadilho ..
+		aeroPerto = gerAero.listarTodos().get(0); // Trocadilho ..
 
 	}
 
@@ -165,7 +166,7 @@ public class JanelaFX extends Application {
 
 		gerenciador.clear();
 
-		for(Rota r : rotas){
+		for (Rota r : rotas) {
 
 			Tracado tracado = new Tracado();
 			tracado.setCor(Color.BLUE);
@@ -174,10 +175,10 @@ public class JanelaFX extends Application {
 			tracado.addPonto(r.getDestino().getLocal());
 			gerenciador.addTracado(tracado);
 
-			if(!listPontos.contains(r.getOrigem())){
+			if (!listPontos.contains(r.getOrigem())) {
 				listPontos.add(new MyWaypoint(Color.RED, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 5));
 			}
-			if(!listPontos.contains(r.getDestino())){
+			if (!listPontos.contains(r.getDestino())) {
 				listPontos.add(new MyWaypoint(Color.RED, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
 			}
 		}
@@ -185,33 +186,33 @@ public class JanelaFX extends Application {
 		gerenciador.getMapKit().repaint();
 	}
 
-	private void consulta2() {
+	private void consulta2(String pais) {
 
-		ArrayList<Aeroporto> aeroportosDoMundo = gerAero.listarTodos();
-		ArrayList<Rota> rotasNoMundo = gerRotas.listarTodas();
+		//ArrayList<Aeroporto> aeroportosDoMundo = gerAero.listarTodos();
+		ArrayList<Rota> rotasNoMundo = gerRotas.listarRotasDeUmPais(pais);
 		List<MyWaypoint> listPontos = new ArrayList<>();
 
 		gerenciador.clear();
 
-		for(Aeroporto aero : aeroportosDoMundo) {
-			listPontos.add(new MyWaypoint(Color.RED, aero.getCodigo(), aero.getLocal(), 5));
+		for (Rota r : rotasNoMundo) {
+
+			Tracado tracado = new Tracado();
+			tracado.setCor(Color.BLUE);
+			tracado.setWidth(1);
+			tracado.addPonto(r.getOrigem().getLocal());
+			tracado.addPonto(r.getDestino().getLocal());
+			gerenciador.addTracado(tracado);
+
+			if (!listPontos.contains(r.getOrigem())) {
+				listPontos.add(new MyWaypoint(Color.RED, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 5));
+			}
+			if (!listPontos.contains(r.getDestino())) {
+				listPontos.add(new MyWaypoint(Color.RED, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
+			}
+
 		}
-
-		// TODO Implementar o for que mostra todas as rotas mundiais.
-        // TODO Quando uma rota é exibida, deve-se mostrar também a distância entre os pontos e a aeronave sendo utilizada.
-//		Tracado tr;
-//
-//		for(Rota r : rotasNoMundo){
-//			tr = new Tracado();
-//			tr.setWidth(r.getOrigem().getNivelDeTrafego()+r.getDestino().getNivelDeTrafego()/3);
-//			tr.addPonto(r.getOrigem().getLocal());
-//			tr.addPonto(r.getDestino().getLocal());
-//			gerenciador.addTracado(tr);
-//		}
-
-		gerenciador.setPontos(listPontos);
-		gerenciador.getMapKit().repaint();
 	}
+
 
 	private void consulta3(String origem, String destino) {
 
