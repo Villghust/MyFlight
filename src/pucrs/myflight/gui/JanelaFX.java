@@ -99,6 +99,12 @@ public class JanelaFX extends Application {
 			consulta3(aeroPerto.getCodigo(), textField.getText().toUpperCase());
 		});
 
+		// Clicar com o botão direito para selecionar o aeroporto e clicar no botão consulta4 para mostrar os destinos ...
+        // ... que o aeroporto tem
+		btnConsulta4.setOnAction(e -> {
+		    consulta4(aeroPerto.getCodigo());
+        });
+
 		pane.setCenter(mapkit);
 		pane.setTop(leftPane);
 
@@ -147,9 +153,12 @@ public class JanelaFX extends Application {
 		} catch (IOException e) {
 			System.out.println("Não foi possível ler countries.dat!");
 		}
+
+        aeroPerto = gerAero.listarTodos().get(0); // Trocadilho ..
+
 	}
 
-	private void consulta1(String cod){
+	private void consulta1(String cod) {
 
 		ArrayList<Rota> rotas = gerRotas.listarRotasCias(cod);
 		List<MyWaypoint> listPontos = new ArrayList<>();
@@ -188,7 +197,8 @@ public class JanelaFX extends Application {
 			listPontos.add(new MyWaypoint(Color.RED, aero.getCodigo(), aero.getLocal(), 5));
 		}
 
-		// @TODO Implementar o for que mostra todas as rotas mundiais.
+		// TODO Implementar o for que mostra todas as rotas mundiais.
+        // TODO Quando uma rota é exibida, deve-se mostrar também a distância entre os pontos e a aeronave sendo utilizada.
 //		Tracado tr;
 //
 //		for(Rota r : rotasNoMundo){
@@ -203,7 +213,7 @@ public class JanelaFX extends Application {
 		gerenciador.getMapKit().repaint();
 	}
 
-	private void consulta3(String origem, String destino){
+	private void consulta3(String origem, String destino) {
 
 		List<MyWaypoint> lstPoints = new ArrayList<>();
 
@@ -255,6 +265,34 @@ public class JanelaFX extends Application {
 		gerenciador.getMapKit().repaint();
 	}
 
+	private void consulta4(String origem) {
+
+        List<MyWaypoint> listPoints = new ArrayList<>();
+        ArrayList<Rota> rotasDeVoo = gerRotas.buscarOrigem(origem);
+        ArrayList<Aeroporto> aeroportosDestino = new ArrayList<>();
+
+        Aeroporto inicio = gerAero.buscarCodigo(origem);
+
+        gerenciador.clear();
+
+        listPoints.add(new MyWaypoint(Color.MAGENTA, inicio.getCodigo(), inicio.getLocal(), 8));
+
+        int aero = 0;
+        while(aeroportosDestino.size() < rotasDeVoo.size()) {
+            aeroportosDestino.add(rotasDeVoo.get(aero).getDestino()); // Pega todos os aeroportos destino e Set na variável
+            listPoints.add(new MyWaypoint(Color.BLUE, aeroportosDestino.get(aero).getCodigo(), aeroportosDestino.get(aero).getLocal(), 8));
+            aero++;
+        }
+
+        gerenciador.setPontos(listPoints);
+        gerenciador.getMapKit().repaint();
+
+        // TODO devemos apresentar os aeroportos que são alcançáveis ATÉ UM DETERMINADO TEMPO DE VOO (ex: 12 horas), com no máximo duas conexões ...
+        // ... por enquanto nosso código mostra todos os voos alcançados com no máximo duas conexões. Precisamos implementar essa treta do tempo ai.
+        // TODO utilizar o textField para set de tempo de voo.
+
+	}
+
 	private class EventosMouse extends MouseAdapter {
 		private int lastButton = -1;
 
@@ -273,7 +311,6 @@ public class JanelaFX extends Application {
 
 			List<MyWaypoint> lstPoints = new ArrayList<>();
 
-			aeroPerto = gerAero.listarTodos().get(0);
 			Geo localClicado = new Geo(gerenciador.getPosicao().getLatitude(), gerenciador.getPosicao().getLongitude());
 			double distancia = Geo.distancia(localClicado, aeroPerto.getLocal());
 
