@@ -48,6 +48,7 @@ public class JanelaFX extends Application {
 
 	private ObservableList<CiaAerea> comboCiasData;
 	private ComboBox<CiaAerea> comboCia;
+	private Aeroporto aeroPerto;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -82,16 +83,20 @@ public class JanelaFX extends Application {
 		leftPane.add(btnConsulta3, 3, 0);
 		leftPane.add(btnConsulta4, 4, 0);
 
+		// Escrever o código da companhia aérea no textField para mostra todas as rotas e aeroportos desta mesma companhia.
 		btnConsulta1.setOnAction(e -> {
 			consulta1(textField.getText().toUpperCase());
 		});
 
-		btnConsulta3.setOnAction(e -> {
-			consulta3("POA", "LHR");
-		});
-
+		// Mostra todos os aeroportos do mundo ... falta coisa aqui @Fred @Marcelo
 		btnConsulta2.setOnAction(e -> {
 			consulta2();
+		});
+
+		// Clicar com o botão direito para selecionar o primeiro aeroporto e ...
+		// ... escrever no textField o código do segundo aeroporto para mostrar todas as rotas entre eles com até 1 escala.
+		btnConsulta3.setOnAction(e -> {
+			consulta3(aeroPerto.getCodigo(), textField.getText().toUpperCase());
 		});
 
 		pane.setCenter(mapkit);
@@ -171,6 +176,33 @@ public class JanelaFX extends Application {
 		gerenciador.getMapKit().repaint();
 	}
 
+	private void consulta2() {
+
+		ArrayList<Aeroporto> aeroportosDoMundo = gerAero.listarTodos();
+		ArrayList<Rota> rotasNoMundo = gerRotas.listarTodas();
+		List<MyWaypoint> listPontos = new ArrayList<>();
+
+		gerenciador.clear();
+
+		for(Aeroporto aero : aeroportosDoMundo) {
+			listPontos.add(new MyWaypoint(Color.RED, aero.getCodigo(), aero.getLocal(), 5));
+		}
+
+		// @TODO Implementar o for que mostra todas as rotas mundiais.
+//		Tracado tr;
+//
+//		for(Rota r : rotasNoMundo){
+//			tr = new Tracado();
+//			tr.setWidth(r.getOrigem().getNivelDeTrafego()+r.getDestino().getNivelDeTrafego()/3);
+//			tr.addPonto(r.getOrigem().getLocal());
+//			tr.addPonto(r.getDestino().getLocal());
+//			gerenciador.addTracado(tr);
+//		}
+
+		gerenciador.setPontos(listPontos);
+		gerenciador.getMapKit().repaint();
+	}
+
 	private void consulta3(String origem, String destino){
 
 		List<MyWaypoint> lstPoints = new ArrayList<>();
@@ -223,32 +255,6 @@ public class JanelaFX extends Application {
 		gerenciador.getMapKit().repaint();
 	}
 
-	private void consulta2() {
-
-		ArrayList<Aeroporto> aeroportosDoMundo = gerAero.listarTodos();
-        ArrayList<Rota> rotasNoMundo = gerRotas.listarTodas();
-		List<MyWaypoint> listPontos = new ArrayList<>();
-
-		gerenciador.clear();
-
-		for(Aeroporto aero : aeroportosDoMundo) {
-			listPontos.add(new MyWaypoint(Color.RED, aero.getCodigo(), aero.getLocal(), 5));
-		}
-
-		Tracado tr;
-
-		for(Rota r : rotasNoMundo){
-			tr = new Tracado();
-			tr.setWidth(r.getOrigem().getNivelDeTrafego()+r.getDestino().getNivelDeTrafego()/3);
-			tr.addPonto(r.getOrigem().getLocal());
-			tr.addPonto(r.getDestino().getLocal());
-			gerenciador.addTracado(tr);
-		}
-
-        gerenciador.setPontos(listPontos);
-        gerenciador.getMapKit().repaint();
-	}
-
 	private class EventosMouse extends MouseAdapter {
 		private int lastButton = -1;
 
@@ -267,7 +273,7 @@ public class JanelaFX extends Application {
 
 			List<MyWaypoint> lstPoints = new ArrayList<>();
 
-			Aeroporto aeroPerto = gerAero.listarTodos().get(0);
+			aeroPerto = gerAero.listarTodos().get(0);
 			Geo localClicado = new Geo(gerenciador.getPosicao().getLatitude(), gerenciador.getPosicao().getLongitude());
 			double distancia = Geo.distancia(localClicado, aeroPerto.getLocal());
 
@@ -282,7 +288,7 @@ public class JanelaFX extends Application {
 
 			gerenciador.clear();
 
-			lstPoints.add(new MyWaypoint(Color.RED, aeroPerto.getCodigo(), aeroPerto.getLocal(), 5));
+			lstPoints.add(new MyWaypoint(Color.MAGENTA, aeroPerto.getCodigo(), aeroPerto.getLocal(), 7));
 
 			gerenciador.setPontos(lstPoints);
 			gerenciador.getMapKit().repaint();
