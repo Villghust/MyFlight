@@ -101,10 +101,13 @@ public class GerenciadorRotas {
 
     public ArrayList<Rota> listarRotasDeUmPais(String pais){
         ArrayList<Rota> result = new ArrayList<>();
+        //int qtdVoos = 0;
         for(Rota r : rotas){
             if(r.getOrigem().getPais().equals(pais) || r.getDestino().getPais().equals(pais) )
+                //qtdVoos++;
                 result.add(r);
         }
+        //System.out.print("Quantidade de voos:" + qtdVoos);
         return result;
     }
 }
