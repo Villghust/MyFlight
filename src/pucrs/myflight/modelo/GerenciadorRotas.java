@@ -71,6 +71,8 @@ public class GerenciadorRotas {
 
     public void adicionar(Rota r) {
         rotas.add(r);
+        r.getDestino().addNivelDeTrafego(); // Adiciona 1 ao número de rotas que chegam no aeroporto destino
+        r.getOrigem().addNivelDeTrafego(); // Adiciona 1 ao número de rotas que saem do aeroporto de origem
     }
 
     public ArrayList<Rota> listarTodas() {
