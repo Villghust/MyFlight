@@ -98,4 +98,14 @@ public class GerenciadorRotas {
 
         return result;
     }
+
+    public ArrayList<Rota> listarRotasDeUmPais(String pais){
+        ArrayList<Rota> result = new ArrayList<>();
+        for(Rota r : rotas){
+            if(r.getOrigem().getPais().equals(pais) || r.getDestino().getPais().equals(pais) )
+                result.add(r);
+        }
+        return result;
+    }
 }
+
