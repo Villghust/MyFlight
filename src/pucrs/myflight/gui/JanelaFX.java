@@ -373,30 +373,33 @@ public class JanelaFX extends Application {
 			GeoPosition loc = mapa.convertPointToGeoPosition(e.getPoint());
 //			System.out.println(loc.getLatitude()+", "+loc.getLongitude());
 			lastButton = e.getButton();
+			List<MyWaypoint> lstPoints = new ArrayList<>();
 
-			// Botão 3: seleciona localização
+			gerenciador.clear();
+
+			// Botão 3: seleciona aeroporto mais próximo da localização clicada
+
 			if (lastButton == MouseEvent.BUTTON3) {
 				gerenciador.setPosicao(loc);
 				gerenciador.getMapKit().repaint();
 			}
 
-			List<MyWaypoint> lstPoints = new ArrayList<>();
+			if (gerenciador.getPosicao() == loc) { // Verificação para evitar os erros ao clicar com o botão 1
 
-			Geo localClicado = new Geo(gerenciador.getPosicao().getLatitude(), gerenciador.getPosicao().getLongitude());
-			double distancia = Geo.distancia(localClicado, aeroPerto.getLocal());
+				Geo localClicado = new Geo(gerenciador.getPosicao().getLatitude(), gerenciador.getPosicao().getLongitude());
+				double distancia = Geo.distancia(localClicado, aeroPerto.getLocal());
 
-			for (Aeroporto aero : gerAero.listarTodos()) {
+				for (Aeroporto aero : gerAero.listarTodos()) {
 
-				Geo pos = aero.getLocal();
-				double dist = Geo.distancia(localClicado, pos);
+					Geo pos = aero.getLocal();
+					double dist = Geo.distancia(localClicado, pos);
 
-				if (dist <= distancia) {
-					aeroPerto = aero;
-					distancia = dist;
+					if (dist <= distancia) {
+						aeroPerto = aero;
+						distancia = dist;
+					}
 				}
 			}
-
-			gerenciador.clear();
 
 			lstPoints.add(new MyWaypoint(Color.BLUE, aeroPerto.getCodigo(), aeroPerto.getLocal(), 10));
 
