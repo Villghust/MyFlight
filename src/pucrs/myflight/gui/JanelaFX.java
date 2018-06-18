@@ -185,82 +185,77 @@ public class JanelaFX extends Application {
 
 	private void consulta2(String pais) {
 
-		//ArrayList<Aeroporto> aeroportosDoMundo = gerAero.listarTodos();
-		ArrayList<Rota> rotasNoMundo = gerRotas.listarRotasDeUmPais(pais);
+		ArrayList<Rota> rotasDoPais = gerRotas.listarRotasDeUmPais(pais);
+		ArrayList<Aeroporto> aerosDoPais = gerAero.listarTodosDeUmPais(rotasDoPais);
 		List<MyWaypoint> listPontos = new ArrayList<>();
 
 		gerenciador.clear();
 
-		for(Rota r : rotasNoMundo) {
+		Aeroporto menorTrafego = aerosDoPais.get(0);
+		Aeroporto maiorTrafego = menorTrafego;
+
+		for (Aeroporto aero : aerosDoPais) {
+			if (aero.getNivelDeTrafego() > maiorTrafego.getNivelDeTrafego()) {
+				maiorTrafego = aero;
+			}
+			if (aero.getNivelDeTrafego() < menorTrafego.getNivelDeTrafego()) {
+				menorTrafego = aero;
+			}
+		}
+
+		for (Rota r : rotasDoPais) {
 
 			Tracado tracado = new Tracado();
-			tracado.setCor(Color.BLUE);
 			tracado.setWidth(1);
-			tracado.addPonto(r.getOrigem().getLocal());
-			tracado.addPonto(r.getDestino().getLocal());
-			gerenciador.addTracado(tracado);
+			tracado.setCor(Color.GRAY); // Voo internacional volta
+
+			r.getOrigem().addNivelDeTrafego();
+			r.getDestino().addNivelDeTrafego();
+
+			if (r.getOrigem().getPais().equals(pais) && r.getDestino().getPais().equals(pais)) { // Voo nacional
+				tracado.setCor(Color.BLUE);
+			} else if (r.getOrigem().getPais().equals(pais) && !r.getDestino().getPais().equals(pais)) { // Voo internacional ida
+				tracado.setCor(Color.GREEN);
+			}
 
 			if (r.getOrigem().getPais().equals(pais)) {
-
-				//testando o volume de trafego
-
-
-
-				if (!listPontos.contains(r.getOrigem())) {
-
-					tracado.setCor(Color.BLUE);
-					tracado.setWidth(1);
-					tracado.addPonto(r.getOrigem().getLocal());
-					tracado.addPonto(r.getDestino().getLocal());
-					gerenciador.addTracado(tracado);
-				}
+				tracado.addPonto(r.getOrigem().getLocal());
+				tracado.addPonto(r.getDestino().getLocal());
+				gerenciador.addTracado(tracado);
 			}
+
 			if (r.getDestino().getPais().equals(pais)) {
-				tracado.setCor(Color.BLUE);
-				tracado.setWidth(1);
 				tracado.addPonto(r.getOrigem().getLocal());
 				tracado.addPonto(r.getDestino().getLocal());
 				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getDestino())) {
-					listPontos.add(new MyWaypoint(Color.yellow, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
+					listPontos.add(new MyWaypoint(Color.BLUE, r.getDestino().getCodigo(), r.getDestino().getLocal(), 10));
 				}
 			}
 
 			if (!r.getOrigem().getPais().equals(pais)) {
-				tracado.setCor(Color.red);
-				tracado.setWidth(1);
 				tracado.addPonto(r.getOrigem().getLocal());
 				tracado.addPonto(r.getDestino().getLocal());
 				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getOrigem())) {
-					listPontos.add(new MyWaypoint(Color.red, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 8));
+					listPontos.add(new MyWaypoint(Color.BLACK, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 10));
 				}
 			}
+
 			if (!r.getDestino().getPais().equals(pais)) {
-				tracado.setCor(Color.red);
-				tracado.setWidth(1);
 				tracado.addPonto(r.getOrigem().getLocal());
 				tracado.addPonto(r.getDestino().getLocal());
 				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getDestino())) {
-					listPontos.add(new MyWaypoint(Color.red, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
+					listPontos.add(new MyWaypoint(Color.BLACK, r.getDestino().getCodigo(), r.getDestino().getLocal(), 10));
 				}
 			}
-
 		}
 
+		listPontos.add(new MyWaypoint(Color.RED, maiorTrafego.getCodigo(), maiorTrafego.getLocal(), 50));
+		listPontos.add(new MyWaypoint(Color.GREEN, menorTrafego.getCodigo(), menorTrafego.getLocal(), 50));
 
-		// TODO Implementar o for que mostra todas as rotas mundiais.
-        // TODO Quando uma rota é exibida, deve-se mostrar também a distância entre os pontos e a aeronave sendo utilizada.
-//		Tracado tr;
-//
-//		for(Rota r : rotasNoMundo){
-//			tr = new Tracado();
-//			tr.setWidth(r.getOrigem().getNivelDeTrafego()+r.getDestino().getNivelDeTrafego()/3);
-//			tr.addPonto(r.getOrigem().getLocal());
-//			tr.addPonto(r.getDestino().getLocal());
-//			gerenciador.addTracado(tr);
-//		}
+		// TODO Quando uma rota é exibida, deve-se mostrar também a distância entre os pontos e a aeronave sendo utilizada.
 
 		gerenciador.setPontos(listPontos);
 		gerenciador.getMapKit().repaint();

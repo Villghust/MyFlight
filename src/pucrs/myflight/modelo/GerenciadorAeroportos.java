@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class GerenciadorAeroportos {
+
     private Map<String, Aeroporto> aeroportos;
 
     public GerenciadorAeroportos(){
@@ -52,10 +53,25 @@ public class GerenciadorAeroportos {
 
     public Aeroporto buscarCodigo(String codigo) {
         return aeroportos.get(codigo);
-//        for(Aeroporto a: aeroportos)
-//            if(a.getCodigo().equals(codigo))
-//                return a;
-//        return null;
+    }
+
+    public ArrayList<Aeroporto> listarTodosDeUmPais(ArrayList<Rota> rotas) {
+
+        ArrayList<Aeroporto> listaDeAero = new ArrayList<>();
+
+        for (Rota r : rotas) {
+            if (r.getOrigem().getPais().equals(r.getDestino().getPais())) {
+                if (!listaDeAero.contains(r.getOrigem()) && !listaDeAero.contains(r.getDestino())) { // Se a lista de aeroportos n tem nenhum deles, adiciona ambos
+                    listaDeAero.add(r.getOrigem());
+                    listaDeAero.add(r.getDestino());
+                } else if ((listaDeAero.contains(r.getOrigem()) && !listaDeAero.contains(r.getDestino()))) { // Se a lista tem só o de origem, adiciona o de destino
+                    listaDeAero.add(r.getDestino());
+                } else if (!(listaDeAero.contains(r.getOrigem())) && listaDeAero.contains(r.getDestino())) { // Se a lista tem só o de destino, adiciona o de origem
+                    listaDeAero.add(r.getOrigem());
+                }
+            }
+        }
+        return listaDeAero;
     }
 
 }
