@@ -165,9 +165,11 @@ public class JanelaFX extends Application {
 
 		ArrayList<Rota> rotas = gerRotas.listarRotasCias(cod);
 		List<MyWaypoint> listPontos = new ArrayList<>();
+
 		gerenciador.clear();
 		
 		for(Rota r : rotas){
+
 			Tracado tracado = new Tracado();
 			tracado.setCor(Color.BLUE);
 			tracado.setWidth(1);
@@ -178,10 +180,12 @@ public class JanelaFX extends Application {
 			if(!listPontos.contains(r.getOrigem())){
 				listPontos.add(new MyWaypoint(Color.RED, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 5));
 			}
+
 			if(!listPontos.contains(r.getDestino())){
 				listPontos.add(new MyWaypoint(Color.RED, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
 			}
 		}
+
 		gerenciador.setPontos(listPontos);
 		gerenciador.getMapKit().repaint();
 	}
@@ -194,23 +198,11 @@ public class JanelaFX extends Application {
 
 		gerenciador.clear();
 
-		Aeroporto menorTrafego = aerosDoPais.get(0);
-		Aeroporto maiorTrafego = menorTrafego;
-
-		for (Aeroporto aero : aerosDoPais) {
-			if (aero.getNivelDeTrafego() > maiorTrafego.getNivelDeTrafego()) {
-				maiorTrafego = aero;
-			}
-			if (aero.getNivelDeTrafego() < menorTrafego.getNivelDeTrafego()) {
-				menorTrafego = aero;
-			}
-		}
-
 		for (Rota r : rotasDoPais) {
 
 			Tracado tracado = new Tracado();
 			tracado.setWidth(1);
-			tracado.setCor(Color.GRAY); // Voo internacional volta
+			tracado.setCor(Color.RED); // Voo internacional volta
 
 			r.getOrigem().addNivelDeTrafego();
 			r.getDestino().addNivelDeTrafego();
@@ -232,7 +224,7 @@ public class JanelaFX extends Application {
 				tracado.addPonto(r.getDestino().getLocal());
 				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getDestino())) {
-					listPontos.add(new MyWaypoint(Color.BLUE, r.getDestino().getCodigo(), r.getDestino().getLocal(), 10));
+					listPontos.add(new MyWaypoint(Color.BLUE, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
 				}
 			}
 
@@ -241,7 +233,7 @@ public class JanelaFX extends Application {
 				tracado.addPonto(r.getDestino().getLocal());
 				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getOrigem())) {
-					listPontos.add(new MyWaypoint(Color.BLACK, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 10));
+					listPontos.add(new MyWaypoint(Color.BLACK, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 5));
 				}
 			}
 
@@ -250,13 +242,25 @@ public class JanelaFX extends Application {
 				tracado.addPonto(r.getDestino().getLocal());
 				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getDestino())) {
-					listPontos.add(new MyWaypoint(Color.BLACK, r.getDestino().getCodigo(), r.getDestino().getLocal(), 10));
+					listPontos.add(new MyWaypoint(Color.BLACK, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
 				}
 			}
 		}
 
-		listPontos.add(new MyWaypoint(Color.RED, maiorTrafego.getCodigo(), maiorTrafego.getLocal(), 50));
+		Aeroporto menorTrafego = aerosDoPais.get(0);
+		Aeroporto maiorTrafego = menorTrafego;
+
+		for (Aeroporto aero : aerosDoPais) {
+			if (aero.getNivelDeTrafego() > maiorTrafego.getNivelDeTrafego()) {
+				maiorTrafego = aero;
+			}
+			if (aero.getNivelDeTrafego() < menorTrafego.getNivelDeTrafego()) {
+				menorTrafego = aero;
+			}
+		}
+
 		listPontos.add(new MyWaypoint(Color.GREEN, menorTrafego.getCodigo(), menorTrafego.getLocal(), 50));
+		listPontos.add(new MyWaypoint(Color.RED, maiorTrafego.getCodigo(), maiorTrafego.getLocal(), 50));
 
 		gerenciador.setPontos(listPontos);
 		gerenciador.getMapKit().repaint();
@@ -277,6 +281,7 @@ public class JanelaFX extends Application {
 		lstPoints.add(new MyWaypoint(Color.RED, fim.getCodigo(), fim.getLocal(), 5));
 
 		for(Rota rOrigem : rotasIniciais){
+
 			Tracado tr = null;
 			Tracado tr2 = null;
 
@@ -290,7 +295,9 @@ public class JanelaFX extends Application {
 				ArrayList<Rota> conexao = gerRotas.buscarOrigem(rOrigem.getDestino().getCodigo());
 
 				for(Rota r : conexao){
+
 					if(r.getDestino().equals(fim)){
+
 						tr = new Tracado();
 						tr.setCor(Color.BLUE);
 						tr.setWidth(2);
@@ -307,9 +314,16 @@ public class JanelaFX extends Application {
 					}
 				}
 			}
-			if(!(tr == null)) gerenciador.addTracado(tr);
-			if(!(tr2 == null)) gerenciador.addTracado(tr2);
+
+			if(!(tr == null)) {
+				gerenciador.addTracado(tr);
+			}
+
+			if(!(tr2 == null)) {
+				gerenciador.addTracado(tr2);
+			}
 		}
+
 		gerenciador.setPontos(lstPoints);
 		gerenciador.getMapKit().repaint();
 
@@ -328,9 +342,10 @@ public class JanelaFX extends Application {
 
         gerenciador.clear();
 
-        listPoints.add(new MyWaypoint(Color.MAGENTA, inicio.getCodigo(), inicio.getLocal(), 8));
+        listPoints.add(new MyWaypoint(Color.BLUE, inicio.getCodigo(), inicio.getLocal(), 10));
 
         int aero = 0;
+
         while(aeroportosDestino.size() < rotasDeVoo.size()) {
             aeroportosDestino.add(rotasDeVoo.get(aero).getDestino()); // Pega todos os aeroportos destino e Set na variável
             listPoints.add(new MyWaypoint(Color.BLUE, aeroportosDestino.get(aero).getCodigo(), aeroportosDestino.get(aero).getLocal(), 8));
@@ -353,6 +368,7 @@ public class JanelaFX extends Application {
 
 		@Override
 		public void mousePressed(MouseEvent e) {
+
 			JXMapViewer mapa = gerenciador.getMapKit().getMainMap();
 			GeoPosition loc = mapa.convertPointToGeoPosition(e.getPoint());
 //			System.out.println(loc.getLatitude()+", "+loc.getLongitude());
@@ -370,8 +386,10 @@ public class JanelaFX extends Application {
 			double distancia = Geo.distancia(localClicado, aeroPerto.getLocal());
 
 			for (Aeroporto aero : gerAero.listarTodos()) {
+
 				Geo pos = aero.getLocal();
 				double dist = Geo.distancia(localClicado, pos);
+
 				if (dist <= distancia) {
 					aeroPerto = aero;
 					distancia = dist;
@@ -380,7 +398,7 @@ public class JanelaFX extends Application {
 
 			gerenciador.clear();
 
-			lstPoints.add(new MyWaypoint(Color.MAGENTA, aeroPerto.getCodigo(), aeroPerto.getLocal(), 7));
+			lstPoints.add(new MyWaypoint(Color.BLUE, aeroPerto.getCodigo(), aeroPerto.getLocal(), 10));
 
 			gerenciador.setPontos(lstPoints);
 			gerenciador.getMapKit().repaint();
