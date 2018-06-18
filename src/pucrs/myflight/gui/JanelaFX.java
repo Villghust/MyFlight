@@ -84,23 +84,27 @@ public class JanelaFX extends Application {
 		leftPane.add(btnConsulta4, 4, 0);
 
 		// Escrever o código da companhia aérea no textField para mostra todas as rotas e aeroportos desta mesma companhia.
+		// #DONE
 		btnConsulta1.setOnAction(e -> {
 			consulta1(textField.getText().toUpperCase());
 		});
 
-		// Mostra todos os aeroportos do mundo ... falta coisa aqui @Fred @Marcelo
+		// Mostra todos os aeroportos do pais selecionado, suas rotas e apresenta os aeroportos com maior e menor tráfego
+		// #DONE
 		btnConsulta2.setOnAction(e -> {
 			consulta2(textField.getText().toUpperCase());
 		});
 
-		// Clicar com o botão direito para selecionar o primeiro aeroporto e ...
-		// ... escrever no textField o código do segundo aeroporto para mostrar todas as rotas entre eles com até 1 escala.
+		// Clicar com o botão direito para selecionar o primeiro aeroporto e escrever no textField o código do segundo
+		// aeroporto para mostrar todas as rotas entre eles com até 1 escala.
+		// TODO #3 terminar consulta 3
 		btnConsulta3.setOnAction(e -> {
 			consulta3(aeroPerto.getCodigo(), textField.getText().toUpperCase());
 		});
 
-		// Clicar com o botão direito para selecionar o aeroporto e clicar no botão consulta4 para mostrar os destinos ...
-        // ... que o aeroporto tem
+		// Clicar com o botão direito para selecionar o aeroporto e clicar no botão consulta4 para mostrar os destinos
+		// que o aeroporto selecionado tem.
+		// TODO #4 terminar consulta 4
 		btnConsulta4.setOnAction(e -> {
 		    consulta4(aeroPerto.getCodigo());
         });
@@ -116,7 +120,6 @@ public class JanelaFX extends Application {
 
 	}
 
-	// Inicializando os dados aqui...
 	private void setup() {
 
 		gerCias = new GerenciadorCias();
@@ -255,8 +258,6 @@ public class JanelaFX extends Application {
 		listPontos.add(new MyWaypoint(Color.RED, maiorTrafego.getCodigo(), maiorTrafego.getLocal(), 50));
 		listPontos.add(new MyWaypoint(Color.GREEN, menorTrafego.getCodigo(), menorTrafego.getLocal(), 50));
 
-		// TODO Quando uma rota é exibida, deve-se mostrar também a distância entre os pontos e a aeronave sendo utilizada.
-
 		gerenciador.setPontos(listPontos);
 		gerenciador.getMapKit().repaint();
 	}
@@ -311,6 +312,10 @@ public class JanelaFX extends Application {
 		}
 		gerenciador.setPontos(lstPoints);
 		gerenciador.getMapKit().repaint();
+
+		// TODO #3.1 Ao selecionar uma rota, mostrar o tempo aproximado total de vôo e destacá-la no mapa com outra cor.
+		// Precisamos descobrir uma maneira de selecionar a rota.
+
 	}
 
 	private void consulta4(String origem) {
@@ -335,9 +340,11 @@ public class JanelaFX extends Application {
         gerenciador.setPontos(listPoints);
         gerenciador.getMapKit().repaint();
 
-        // TODO devemos apresentar os aeroportos que são alcançáveis ATÉ UM DETERMINADO TEMPO DE VOO (ex: 12 horas), com no máximo duas conexões ...
-        // ... por enquanto nosso código mostra todos os voos alcançados com no máximo duas conexões. Precisamos implementar essa treta do tempo ai.
-        // TODO utilizar o textField para set de tempo de voo.
+        // TODO #4.1 devemos apresentar os aeroportos que são alcançáveis ATÉ UM DETERMINADO TEMPO DE VOO (ex: 12 horas), com no máximo duas conexões
+		// Utilizar o textField para set de tempo de voo.
+		// TODO #4.2 Quando uma rota é exibida, deve-se mostrar também a distância entre os pontos e a aeronave sendo utilizada.
+		// Criar dois labels na aplicação: um para mostrar a aeronave e o outro para mostrar a distância. Conforme a rota é selecionada
+		// o label deve atualizar o seu texto para o nome da aeronavo e o outro para o valor da distância.
 
 	}
 
