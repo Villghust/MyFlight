@@ -162,11 +162,9 @@ public class JanelaFX extends Application {
 
 		ArrayList<Rota> rotas = gerRotas.listarRotasCias(cod);
 		List<MyWaypoint> listPontos = new ArrayList<>();
-
 		gerenciador.clear();
-
+		
 		for(Rota r : rotas){
-
 			Tracado tracado = new Tracado();
 			tracado.setCor(Color.BLUE);
 			tracado.setWidth(1);
@@ -203,26 +201,52 @@ public class JanelaFX extends Application {
 			gerenciador.addTracado(tracado);
 
 			if (r.getOrigem().getPais().equals(pais)) {
+
+				//testando o volume de trafego
+
+
+
 				if (!listPontos.contains(r.getOrigem())) {
-					listPontos.add(new MyWaypoint(Color.yellow, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 8));
+
+					tracado.setCor(Color.BLUE);
+					tracado.setWidth(1);
+					tracado.addPonto(r.getOrigem().getLocal());
+					tracado.addPonto(r.getDestino().getLocal());
+					gerenciador.addTracado(tracado);
 				}
 			}
 			if (r.getDestino().getPais().equals(pais)) {
+				tracado.setCor(Color.BLUE);
+				tracado.setWidth(1);
+				tracado.addPonto(r.getOrigem().getLocal());
+				tracado.addPonto(r.getDestino().getLocal());
+				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getDestino())) {
 					listPontos.add(new MyWaypoint(Color.yellow, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
 				}
 			}
 
 			if (!r.getOrigem().getPais().equals(pais)) {
+				tracado.setCor(Color.red);
+				tracado.setWidth(1);
+				tracado.addPonto(r.getOrigem().getLocal());
+				tracado.addPonto(r.getDestino().getLocal());
+				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getOrigem())) {
 					listPontos.add(new MyWaypoint(Color.red, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 8));
 				}
 			}
 			if (!r.getDestino().getPais().equals(pais)) {
+				tracado.setCor(Color.red);
+				tracado.setWidth(1);
+				tracado.addPonto(r.getOrigem().getLocal());
+				tracado.addPonto(r.getDestino().getLocal());
+				gerenciador.addTracado(tracado);
 				if (!listPontos.contains(r.getDestino())) {
 					listPontos.add(new MyWaypoint(Color.red, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
 				}
 			}
+
 		}
 
 
