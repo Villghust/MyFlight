@@ -193,7 +193,7 @@ public class JanelaFX extends Application {
 
 		gerenciador.clear();
 
-		for(Rota r : rotasNoMundo){
+		for(Rota r : rotasNoMundo) {
 
 			Tracado tracado = new Tracado();
 			tracado.setCor(Color.BLUE);
@@ -202,11 +202,26 @@ public class JanelaFX extends Application {
 			tracado.addPonto(r.getDestino().getLocal());
 			gerenciador.addTracado(tracado);
 
-			if(!listPontos.contains(r.getOrigem())){
-				listPontos.add(new MyWaypoint(Color.RED, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 5));
+			if (r.getOrigem().getPais().equals(pais)) {
+				if (!listPontos.contains(r.getOrigem())) {
+					listPontos.add(new MyWaypoint(Color.yellow, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 8));
+				}
 			}
-			if(!listPontos.contains(r.getDestino())){
-				listPontos.add(new MyWaypoint(Color.RED, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
+			if (r.getDestino().getPais().equals(pais)) {
+				if (!listPontos.contains(r.getDestino())) {
+					listPontos.add(new MyWaypoint(Color.yellow, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
+				}
+			}
+
+			if (!r.getOrigem().getPais().equals(pais)) {
+				if (!listPontos.contains(r.getOrigem())) {
+					listPontos.add(new MyWaypoint(Color.red, r.getOrigem().getCodigo(), r.getOrigem().getLocal(), 8));
+				}
+			}
+			if (!r.getDestino().getPais().equals(pais)) {
+				if (!listPontos.contains(r.getDestino())) {
+					listPontos.add(new MyWaypoint(Color.red, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));
+				}
 			}
 		}
 
