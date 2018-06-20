@@ -363,36 +363,41 @@ public class JanelaFX extends Application {
 
 	}
 
-	private void consulta4(String origem) {
-
+    private void consulta4(String origem, Double time) {
         List<MyWaypoint> listPoints = new ArrayList<>();
-        ArrayList<Rota> rotasDeVoo = gerRotas.buscarOrigem(origem);
-        ArrayList<Aeroporto> aeroportosDestino = new ArrayList<>();
+        Aeroporto inicio = gerAero.buscarCodigo(origem); // Atribiu o aeroporto escolhido a uma variavel
+        ArrayList<Rota> TodasRotasDeUmAeroporto = gerRotas.buscarOrigem(origem); // Pega todas as rotas  possiveis de um determinado pais
+        ArrayList<Rota> rotasDeterminadoTempo = new ArrayList<>(); // Server para armazenar a rota se a verificação do tempo for verdadeira
 
-        Aeroporto inicio = gerAero.buscarCodigo(origem);
+        double duracaoVoo; // variaveis para armazenarem o tempo do voo
+        double duracaoEscala;
+
+        if (!listPoints.contains(inicio)) {listPoints.add(new MyWaypoint(Color.MAGENTA, inicio.getCodigo(), inicio.getLocal(), 5));}
 
         gerenciador.clear();
 
-        listPoints.add(new MyWaypoint(Color.BLUE, inicio.getCodigo(), inicio.getLocal(), 10));
+        for (Rota r : TodasRotasDeUmAeroporto) { // Loop para varrer todas as rotas possiveis do aeroporto escolhido
+            duracaoVoo = inicio.getLocal().distancia(r.getDestino().getLocal()) / 800; // Calculo para saber o tempo
+            if (duracaoVoo <= time) {
+                rotasDeterminadoTempo.add(r);
+                if (!listPoints.contains(r.getDestino())) {listPoints.add(new MyWaypoint(Color.RED, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));}
+            }
+            for (Rota r_escala : gerRotas.buscarOrigem(r.getDestino().getCodigo())) { // Pega o aeroporto de destino do aeroporto inicial e varre no loop para pegar as escalas possiveis
+                duracaoEscala = r_escala.getOrigem().getLocal().distancia(r_escala.getDestino().getLocal()) / 800;
+                if (!r_escala.getDestino().equals(inicio)) {
+                    if ((duracaoEscala + duracaoVoo) <= time) {
+                        rotasDeterminadoTempo.add(r_escala);
+                        if (!listPoints.contains(r_escala.getDestino())) {listPoints.add(new MyWaypoint(Color.RED, r_escala.getDestino().getCodigo(), r_escala.getDestino().getLocal(), 5));                        }
+                    }
 
-        int aero = 0;
+                }
+            }
 
-        while(aeroportosDestino.size() < rotasDeVoo.size()) {
-            aeroportosDestino.add(rotasDeVoo.get(aero).getDestino()); // Pega todos os aeroportos destino e Set na variável
-            listPoints.add(new MyWaypoint(Color.BLUE, aeroportosDestino.get(aero).getCodigo(), aeroportosDestino.get(aero).getLocal(), 8));
-            aero++;
+            gerenciador.setPontos(listPoints);
+            gerenciador.getMapKit().repaint();
+
         }
-
-        gerenciador.setPontos(listPoints);
-        gerenciador.getMapKit().repaint();
-
-        // TODO #4.1 devemos apresentar os aeroportos que são alcançáveis ATÉ UM DETERMINADO TEMPO DE VOO (ex: 12 horas), com no máximo duas conexões
-		// Utilizar o textField para set de tempo de voo.
-		// TODO #4.2 Quando uma rota é exibida, deve-se mostrar também a distância entre os pontos e a aeronave sendo utilizada.
-		// Criar dois labels na aplicação: um para mostrar a aeronave e o outro para mostrar a distância. Conforme a rota é selecionada
-		// o label deve atualizar o seu texto para o nome da aeronavo e o outro para o valor da distância.
-
-	}
+    }
 
 	private class EventosMouse extends MouseAdapter {
 		private int lastButton = -1;
@@ -422,14 +427,14 @@ public class JanelaFX extends Application {
 
 				for (Aeroporto aero : gerAero.listarTodos()) {
 
-					Geo pos = aero.getLocal();
-					double dist = Geo.distancia(localClicado, pos);
+                    Geo pos = aero.getLocal();
+                    double dist = Geo.distancia(localClicado, pos);
 
-					if (dist <= distancia) {
-						aeroPerto = aero;
-						distancia = dist;
-					}
-				}
+                    if (dist <= distancia) {
+                        aeroPerto = aero;
+                        distancia = dist;
+                    }
+                }
 			}
 
 			lstPoints.add(new MyWaypoint(Color.BLUE, aeroPerto.getCodigo(), aeroPerto.getLocal(), 10));
