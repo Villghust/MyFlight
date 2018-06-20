@@ -44,6 +44,8 @@ public class JanelaFX extends Application {
 	private GerenciadorPaises gerPaises;
 
 	private GerenciadorMapa gerenciador;
+	private double defaultBoxItemWidth = 150.0;
+
 
 	private EventosMouse mouse;
 

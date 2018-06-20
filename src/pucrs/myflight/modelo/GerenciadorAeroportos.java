@@ -74,4 +74,10 @@ public class GerenciadorAeroportos {
         return listaDeAero;
     }
 
+    public ArrayList<Aeroporto> listarTodosOrdenado() {
+        ArrayList<Aeroporto> list = new ArrayList<>(aeroportos.values());
+        list.sort(Comparator.comparing(Aeroporto::getCodigo));
+        return list;
+    }
+
 }
