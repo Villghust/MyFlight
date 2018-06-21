@@ -52,4 +52,10 @@ public class GerenciadorCias {
                return cia;
         return null;
     }
+
+    public ArrayList<CiaAerea> listarTodosOrdenado() {
+        ArrayList<CiaAerea> list = new ArrayList<>(empresas.values());
+        list.sort(Comparator.comparing(CiaAerea::getCodigo));
+        return list;
+    }
 }

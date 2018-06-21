@@ -5,10 +5,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class GerenciadorPaises {
 
@@ -57,4 +54,9 @@ public class GerenciadorPaises {
         }
     }
 
+    public ArrayList<Pais> listarTodosOrdenado() {
+        ArrayList<Pais> list = new ArrayList<>(paises.values());
+        list.sort(Comparator.comparing(Pais::getCodigo));
+        return list;
+    }
 }

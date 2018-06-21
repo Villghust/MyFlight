@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 
 import javax.swing.SwingUtilities;
 
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
@@ -43,6 +44,8 @@ public class JanelaFX extends Application {
 	private GerenciadorPaises gerPaises;
 
 	private GerenciadorMapa gerenciador;
+	private double defaultBoxItemWidth = 150.0;
+
 
 	private EventosMouse mouse;
 
@@ -50,75 +53,103 @@ public class JanelaFX extends Application {
 	private ComboBox<CiaAerea> comboCia;
 	private Aeroporto aeroPerto;
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
+    @Override
+    public void start(Stage primaryStage) throws Exception {
 
-		setup();
+        setup();
 
-		GeoPosition poa = new GeoPosition(-30.05, -51.18);
-		gerenciador = new GerenciadorMapa(poa, GerenciadorMapa.FonteImagens.VirtualEarth);
-		mouse = new EventosMouse();
-		gerenciador.getMapKit().getMainMap().addMouseListener(mouse);
-		gerenciador.getMapKit().getMainMap().addMouseMotionListener(mouse);
+        GeoPosition poa = new GeoPosition(-30.05, -51.18);
+        gerenciador = new GerenciadorMapa(poa, GerenciadorMapa.FonteImagens.VirtualEarth);
+        mouse = new EventosMouse();
+        gerenciador.getMapKit().getMainMap().addMouseListener(mouse);
+        gerenciador.getMapKit().getMainMap().addMouseMotionListener(mouse);
 
-		createSwingContent(mapkit);
+        createSwingContent(mapkit);
 
-		BorderPane pane = new BorderPane();
-		GridPane leftPane = new GridPane();
+        BorderPane pane = new BorderPane();
+        GridPane leftPane = new GridPane();
 
-		leftPane.setAlignment(Pos.CENTER);
-		leftPane.setHgap(10);
-		leftPane.setVgap(10);
-		leftPane.setPadding(new Insets(10, 10, 10, 10));
+        leftPane.setAlignment(Pos.CENTER);
+        leftPane.setHgap(10);
+        leftPane.setVgap(10);
+        leftPane.setPadding(new Insets(10, 10, 10, 10));
 
-		Button btnConsulta1 = new Button("Consulta 1");
-		Button btnConsulta2 = new Button("Consulta 2");
-		Button btnConsulta3 = new Button("Consulta 3");
-		Button btnConsulta4 = new Button("Consulta 4");
-		TextField textField = new TextField();
+        Button btnConsulta1 = new Button("Consulta 1");
+        Button btnConsulta2 = new Button("Consulta 2");
+        Button btnConsulta3 = new Button("Consulta 3");
+        Button btnConsulta4 = new Button("Consulta 4");
+        TextField textField = new TextField();
+        TextField tfTempo = new TextField();
+        ComboBox<CiaAerea> comboCia = new ComboBox<>();
+        ComboBox<Pais> comboPais = new ComboBox<>();
+        ComboBox<Aeroporto> comboAero1 = new ComboBox<>();
+        ComboBox<Aeroporto> comboAero2 = new ComboBox<>();
 
-		leftPane.add(textField,0,0);
-		leftPane.add(btnConsulta1, 1, 0);
-		leftPane.add(btnConsulta2, 2, 0);
-		leftPane.add(btnConsulta3, 3, 0);
-		leftPane.add(btnConsulta4, 4, 0);
+        comboCia.setItems(FXCollections.observableList(gerCias.listarTodosOrdenado()));
+        comboPais.setItems(FXCollections.observableList(gerPaises.listarTodosOrdenado()));
+        comboAero1.setItems(FXCollections.observableList(gerAero.listarTodosOrdenado()));
+        comboAero2.setItems(FXCollections.observableList(gerAero.listarTodosOrdenado()));
 
-		// Escrever o código da companhia aérea no textField para mostra todas as rotas e aeroportos desta mesma companhia.
-		// #DONE
-		btnConsulta1.setOnAction(e -> {
-			consulta1(textField.getText().toUpperCase());
-		});
+        comboAero1.setMaxWidth(defaultBoxItemWidth);
+        comboAero2.setMaxWidth(defaultBoxItemWidth);
+        comboCia.setMaxWidth(defaultBoxItemWidth);
+        comboPais.setMaxWidth(defaultBoxItemWidth);
 
-		// Mostra todos os aeroportos do pais selecionado, suas rotas e apresenta os aeroportos com maior e menor tráfego
-		// #DONE
-		btnConsulta2.setOnAction(e -> {
-			consulta2(textField.getText().toUpperCase());
-		});
+        javafx.scene.control.Label lblCia = new javafx.scene.control.Label("Cia Aérea");
+        javafx.scene.control.Label lblOrigem = new javafx.scene.control.Label("Origem");
+        javafx.scene.control.Label lblDestino = new javafx.scene.control.Label("Destino");
+        javafx.scene.control.Label lblTempo = new Label("Tempo");
 
-		// Clicar com o botão direito para selecionar o primeiro aeroporto e escrever no textField o código do segundo
-		// aeroporto para mostrar todas as rotas entre eles com até 1 escala.
-		// TODO #3 terminar consulta 3
-		btnConsulta3.setOnAction(e -> {
-			consulta3(aeroPerto.getCodigo(), textField.getText().toUpperCase());
-		});
+        leftPane.add(lblCia,0,0);
+        leftPane.add(comboCia,0,1);
+        leftPane.add(btnConsulta1, 0, 2);
+        leftPane.add(comboPais,0,3);
+        leftPane.add(btnConsulta2, 0, 4);
+        leftPane.add(lblOrigem,0,5);
+        leftPane.add(comboAero1,0,6);
+        leftPane.add(lblDestino,0,7);
+        leftPane.add(comboAero2, 0, 8);
+        leftPane.add(btnConsulta3, 0, 9);
+        leftPane.add(lblTempo,0,10);
+        leftPane.add(tfTempo,0,11);
+        leftPane.add(btnConsulta4, 0, 12);
 
-		// Clicar com o botão direito para selecionar o aeroporto e clicar no botão consulta4 para mostrar os destinos
-		// que o aeroporto selecionado tem.
-		// TODO #4 terminar consulta 4
-		btnConsulta4.setOnAction(e -> {
-		    consulta4(aeroPerto.getCodigo());
+        // Escrever o código da companhia aérea no textField para mostra todas as rotas e aeroportos desta mesma companhia.
+        // #DONE
+        btnConsulta1.setOnAction(e -> {
+            consulta1(comboCia.getValue().getCodigo());
         });
 
-		pane.setCenter(mapkit);
-		pane.setTop(leftPane);
+        // Mostra todos os aeroportos do pais selecionado, suas rotas e apresenta os aeroportos com maior e menor tráfego
+        // #DONE
+        btnConsulta2.setOnAction(e -> {
+            consulta2(comboPais.getValue().getCodigo());
+        });
 
-		Scene scene = new Scene(pane, 1080, 720);
-		primaryStage.setScene(scene);
+        // Clicar com o botão direito para selecionar o primeiro aeroporto e escrever no textField o código do segundo
+        // aeroporto para mostrar todas as rotas entre eles com até 1 escala.
+        // TODO #3 terminar consulta 3
+        btnConsulta3.setOnAction(e -> {
+            consulta3(comboAero1.getValue().getCodigo(),comboAero2.getValue().getCodigo());
+        });
+
+        // Clicar com o botão direito para selecionar o aeroporto e clicar no botão consulta4 para mostrar os destinos
+        // que o aeroporto selecionado tem.
+        // TODO #4 terminar consulta 4
+        btnConsulta4.setOnAction(e -> {
+            consulta4(aeroPerto.getCodigo(), Double.parseDouble(tfTempo.getText()));
+        });
+
+        pane.setCenter(mapkit);
+        pane.setRight(leftPane);
+
+        Scene scene = new Scene(pane, 1080, 720);
+        primaryStage.setScene(scene);
 //		primaryStage.setFullScreen(true);
-		primaryStage.setTitle("Mapas com JavaFX");
-		primaryStage.show();
+        primaryStage.setTitle("Mapas com JavaFX");
+        primaryStage.show();
 
-	}
+    }
 
 	private void setup() {
 
@@ -332,36 +363,41 @@ public class JanelaFX extends Application {
 
 	}
 
-	private void consulta4(String origem) {
-
+    private void consulta4(String origem, Double time) {
         List<MyWaypoint> listPoints = new ArrayList<>();
-        ArrayList<Rota> rotasDeVoo = gerRotas.buscarOrigem(origem);
-        ArrayList<Aeroporto> aeroportosDestino = new ArrayList<>();
+        Aeroporto inicio = gerAero.buscarCodigo(origem); // Atribiu o aeroporto escolhido a uma variavel
+        ArrayList<Rota> TodasRotasDeUmAeroporto = gerRotas.buscarOrigem(origem); // Pega todas as rotas  possiveis de um determinado pais
+        ArrayList<Rota> rotasDeterminadoTempo = new ArrayList<>(); // Server para armazenar a rota se a verificação do tempo for verdadeira
 
-        Aeroporto inicio = gerAero.buscarCodigo(origem);
+        double duracaoVoo; // variaveis para armazenarem o tempo do voo
+        double duracaoEscala;
+
+        if (!listPoints.contains(inicio)) {listPoints.add(new MyWaypoint(Color.MAGENTA, inicio.getCodigo(), inicio.getLocal(), 5));}
 
         gerenciador.clear();
 
-        listPoints.add(new MyWaypoint(Color.BLUE, inicio.getCodigo(), inicio.getLocal(), 10));
+        for (Rota r : TodasRotasDeUmAeroporto) { // Loop para varrer todas as rotas possiveis do aeroporto escolhido
+            duracaoVoo = inicio.getLocal().distancia(r.getDestino().getLocal()) / 800; // Calculo para saber o tempo
+            if (duracaoVoo <= time) {
+                rotasDeterminadoTempo.add(r);
+                if (!listPoints.contains(r.getDestino())) {listPoints.add(new MyWaypoint(Color.RED, r.getDestino().getCodigo(), r.getDestino().getLocal(), 5));}
+            }
+            for (Rota r_escala : gerRotas.buscarOrigem(r.getDestino().getCodigo())) { // Pega o aeroporto de destino do aeroporto inicial e varre no loop para pegar as escalas possiveis
+                duracaoEscala = r_escala.getOrigem().getLocal().distancia(r_escala.getDestino().getLocal()) / 800;
+                if (!r_escala.getDestino().equals(inicio)) {
+                    if ((duracaoEscala + duracaoVoo) <= time) {
+                        rotasDeterminadoTempo.add(r_escala);
+                        if (!listPoints.contains(r_escala.getDestino())) {listPoints.add(new MyWaypoint(Color.RED, r_escala.getDestino().getCodigo(), r_escala.getDestino().getLocal(), 5));                        }
+                    }
 
-        int aero = 0;
+                }
+            }
 
-        while(aeroportosDestino.size() < rotasDeVoo.size()) {
-            aeroportosDestino.add(rotasDeVoo.get(aero).getDestino()); // Pega todos os aeroportos destino e Set na variável
-            listPoints.add(new MyWaypoint(Color.BLUE, aeroportosDestino.get(aero).getCodigo(), aeroportosDestino.get(aero).getLocal(), 8));
-            aero++;
+            gerenciador.setPontos(listPoints);
+            gerenciador.getMapKit().repaint();
+
         }
-
-        gerenciador.setPontos(listPoints);
-        gerenciador.getMapKit().repaint();
-
-        // TODO #4.1 devemos apresentar os aeroportos que são alcançáveis ATÉ UM DETERMINADO TEMPO DE VOO (ex: 12 horas), com no máximo duas conexões
-		// Utilizar o textField para set de tempo de voo.
-		// TODO #4.2 Quando uma rota é exibida, deve-se mostrar também a distância entre os pontos e a aeronave sendo utilizada.
-		// Criar dois labels na aplicação: um para mostrar a aeronave e o outro para mostrar a distância. Conforme a rota é selecionada
-		// o label deve atualizar o seu texto para o nome da aeronavo e o outro para o valor da distância.
-
-	}
+    }
 
 	private class EventosMouse extends MouseAdapter {
 		private int lastButton = -1;
@@ -391,14 +427,14 @@ public class JanelaFX extends Application {
 
 				for (Aeroporto aero : gerAero.listarTodos()) {
 
-					Geo pos = aero.getLocal();
-					double dist = Geo.distancia(localClicado, pos);
+                    Geo pos = aero.getLocal();
+                    double dist = Geo.distancia(localClicado, pos);
 
-					if (dist <= distancia) {
-						aeroPerto = aero;
-						distancia = dist;
-					}
-				}
+                    if (dist <= distancia) {
+                        aeroPerto = aero;
+                        distancia = dist;
+                    }
+                }
 			}
 
 			lstPoints.add(new MyWaypoint(Color.BLUE, aeroPerto.getCodigo(), aeroPerto.getLocal(), 10));
